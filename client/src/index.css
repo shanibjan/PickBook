@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "QLight";
+
+  src: url("../src/fonts/Quicksand-Light.ttf");
+}
+@font-face {
+  font-family: "QRegular";
+
+  src: url("./fonts/Quicksand-Regular.ttf");
+}
+@font-face {
+  font-family: "QMedium";
+
+  src: url("./fonts/Quicksand-Medium.ttf");
+}
+@font-face {
+  font-family: "QSemi";
+
+  src: url("../src/fonts/Quicksand-SemiBold.ttf");
+}
+@font-face {
+  font-family: "QBold";
+
+  src: url("./fonts/Quicksand-Bold.ttf");
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.file {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed; /* Stays in place while scrolling */
+  top: 0;
+  
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.7); /* Black background with transparency */
+  z-index: 999; /* Ensures it stays above other content */
+   /* Vertically center content */
+}
+
+/* Content inside the overlay */
+.overlay-content {
+ 
+  
+  
+  
+ 
+  width: 100%;
+}
+
+
+
