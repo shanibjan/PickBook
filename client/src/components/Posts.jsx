@@ -9,9 +9,7 @@ import {
   faCommentDots,
   faPaperPlane,
   faBookmark,
-  faSquarePlus,
-  faMessage,
-  faBell,
+  
 } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import feed from "../images/br.jpg";
@@ -20,6 +18,7 @@ import feed3 from "../images/IMG_1515.jpeg";
 import axios from "axios";
 import Comments from "./Comments";
 import { motion,AnimatePresence } from "framer-motion";
+import Footer from "./Footer";
 const Posts = () => {
   const [isCommentVisible, setIsCommentVisible] = useState(false);
 
@@ -187,20 +186,7 @@ const Posts = () => {
         </div>
       )}
       </AnimatePresence>
-      <div className=" fixed bottom-0 w-full bg-white px-[5%] py-[2%] hidden max-[800px]:flex justify-between " >  
-        <div className="h-[25px]" >
-          <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
-        </div>
-        <div className="h-[25px]" >
-          <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
-        </div>
-        <div className="h-[25px]" >
-          <FontAwesomeIcon icon={faBell} className="w-full h-full" />
-        </div>
-        <div className="h-[25px]" >
-          <img className="h-full" src={user} alt="" />
-        </div>
-      </div>
+      <Footer/>
       
     </div>
   );
