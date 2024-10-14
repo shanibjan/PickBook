@@ -70,6 +70,21 @@ const Posts = () => {
     },
   ];
   return (
+    // <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
+    //             <h2 className="mr-2 text-left  ">
+    //               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+    //               Assumenda asperiores vero vel quasi animi accusantium id rem?
+    //               Temporibus architecto necessitatibus dolor? Velit distinctio
+    //               eaque amet magnam aspernatur, eligendi molestias ea?
+    //             </h2>
+    //             <h3 className="text-gray-500">12:54</h3>
+    //           </div>
+    //           <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
+    //             <h2 className="mr-2 text-left ">
+    //               Lorem ipmenda asperiores vero vel quasi
+    //             </h2>
+    //             <h3 className="text-gray-500">12:54</h3>
+    //           </div>
     <div className="relative">
       <div className=" w-[90%] m-[5%] top-[95px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
         <div className="px-[10%] py-[2%] bg-white rounded-[10px] shadow-lg">
