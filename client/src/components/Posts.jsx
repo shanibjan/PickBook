@@ -9,7 +9,6 @@ import {
   faCommentDots,
   faPaperPlane,
   faBookmark,
-  
 } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import feed from "../images/br.jpg";
@@ -17,29 +16,23 @@ import feed2 from "../images/IMG_8890.jpeg";
 import feed3 from "../images/IMG_1515.jpeg";
 import axios from "axios";
 import Comments from "./Comments";
-import { motion,AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./Footer";
 const Posts = () => {
   const [isCommentVisible, setIsCommentVisible] = useState(false);
-
-
 
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
   };
 
-
   useEffect(() => {
     handleDataFromChild();
   }, []);
 
-
-
   useEffect(() => {
     if (isCommentVisible === true) {
       document.body.style.overflow = "hidden";
-    }
-    else{
+    } else {
       document.body.style.overflow = "scroll";
     }
   }, [isCommentVisible]);
@@ -154,7 +147,7 @@ const Posts = () => {
                   <div className="flex justify-between mt-[2%] text-[25px]">
                     <div className="flex w-[25%] justify-between cursor-pointer">
                       <FontAwesomeIcon icon={faHeart} />
-                      <FontAwesomeIcon 
+                      <FontAwesomeIcon
                         onClick={() => setIsCommentVisible(true)}
                         icon={faCommentDots}
                       />
@@ -171,23 +164,22 @@ const Posts = () => {
         </div>
       </div>
       <AnimatePresence>
-      {isCommentVisible && (
-        <div className="overlay">
-          <div className=" overlay-content fixed w-full bottom-0">
-            <motion.div
-              initial={{ y: 1000 }}
-              animate={{ y: 0 }}
-              exit={{ y: 1000 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Comments onDataSend={handleDataFromChild} />
-            </motion.div>
+        {isCommentVisible && (
+          <div className="overlay">
+            <div className=" overlay-content fixed w-full bottom-0">
+              <motion.div
+                initial={{ y: 1000 }}
+                animate={{ y: 0 }}
+                exit={{ y: 1000 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Comments onDataSend={handleDataFromChild} />
+              </motion.div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </AnimatePresence>
-      <Footer/>
-      
+      <Footer />
     </div>
   );
 };

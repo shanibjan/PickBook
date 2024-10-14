@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import userProfile from "../images/IMG_6351.jpeg";
@@ -14,8 +14,9 @@ import feed2 from "../images/IMG_8890.jpeg";
 import feed3 from "../images/IMG_1515.jpeg";
 import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
+const Profile = () => {
   const posts = [{ src: feed }, { src: feed2 }, { src: feed3 }];
+ 
   const nav=useNavigate()
   return (
     <div className="absolute top-[120px] w-full">
@@ -34,11 +35,11 @@ const UserProfile = () => {
               <div className="flex justify-between items-center">
                 <h1 className="font-QSemi text-[22px]">shanib_jaan__</h1>
                 <div className=" flex justify-between w-[60%] max-[700px]:hidden">
-                  <button className="bg-[#8735C8] font-QSemi text-white px-[15%] py-[4%] rounded-[10px] shadow-md ">
-                    Follow
+                  <button className="bg-[#8735C8] font-QSemi text-white px-[10%] py-[4%] rounded-[10px] shadow-md ">
+                   Edit profile
                   </button>
-                  <button className="bg-gray-400 font-QSemi text-white px-[15%] py-[4%] rounded-[10px] shadow-md ">
-                    Message
+                  <button className="bg-gray-400 font-QSemi text-white px-[10%] py-[4%] rounded-[10px] shadow-md ">
+                    View archieve
                   </button>
                 </div>
 
@@ -56,12 +57,7 @@ const UserProfile = () => {
                   <h2>@colin__guest</h2>
                   <h2> 🇨🇳🇧🇩🇭🇰</h2>
                 </div>
-                <div className="flex font-QMedium  my-[3%]">
-                  <p className="text-gray-500 mr-[1%]">Followed by </p>
-                  <p className="font-QSemi">abrham_m ,</p>
-                  <p className="font-QSemi">kennedy_jon</p>
-                  <p className="text-gray-500 ml-[1%]">and 55 more</p>
-                </div>
+               
               </div>
             </div>
           </div>
@@ -80,10 +76,10 @@ const UserProfile = () => {
             </div>
             <div className="flex">
               <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] rounded-[10px] mr-[7%]">
-                Follow
+                Edit profile
               </button>
               <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] rounded-[10px] ">
-                Message
+                View archive
               </button>
             </div>
           </div>
@@ -121,4 +117,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default Profile;

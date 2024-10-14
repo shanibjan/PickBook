@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../images/—Pngtree—the letter p on a_15885322.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faMessage, faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import user from "../images/user.png";
+import Comments from "./Comments";
+import { motion,AnimatePresence } from "framer-motion";
+import Notification from "./Notifications";
 const NavBar = () => {
+  const [isCommentVisible, setIsCommentVisible] = useState(false);
+  const handleDataFromChild = (data) => {
+    setIsCommentVisible(data);
+  };
+
+
+  useEffect(() => {
+    handleDataFromChild();
+  }, []);
+
+  useEffect(() => {
+    if (isCommentVisible === true) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "scroll";
+    }
+  }, [isCommentVisible]);
+
+  
   return (
     <div>
         <div className="flex justify-between text-gray-700 items-center px-[5%] fixed w-full z-10 bg-white top-0">
@@ -31,7 +53,7 @@ const NavBar = () => {
         <div className="h-[25px]" >
           <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
         </div>
-        <div className="h-[25px]" >
+        <div className="h-[25px]"  onClick={() => setIsCommentVisible(true)} >
           <FontAwesomeIcon icon={faBell} className="w-full h-full" />
         </div>
         <div className="h-[25px]" >
@@ -39,6 +61,23 @@ const NavBar = () => {
         </div>
       </div>
     </div>
+
+    <AnimatePresence>
+      {isCommentVisible && (
+        <div className="overlay">
+          <div className=" overlay-content fixed w-full bottom-0">
+            <motion.div
+              initial={{ x: 1500 }}
+              animate={{ x: 0 }}
+              exit={{ x: 1500 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Notification onDataSend={handleDataFromChild} />
+            </motion.div>
+          </div>
+        </div>
+      )}
+      </AnimatePresence>
     
     </div>
     
