@@ -85,6 +85,7 @@ const Posts = () => {
     //             </h2>
     //             <h3 className="text-gray-500">12:54</h3>
     //           </div>
+    
     <div className="relative">
       <div className=" w-[90%] m-[5%] top-[95px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
         <div className="px-[10%] py-[2%] bg-white rounded-[10px] shadow-lg">

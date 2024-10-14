@@ -21,9 +21,9 @@ import {
 import EmojiPicker from "emoji-picker-react";
 
 const Message = () => {
-  const [message, setMessage] = useState("");
+  const [typing, setTyping] = useState("");
 
-  const messages = [
+  const messageBoxes = [
     {
       img: user2,
       name: "Jordyn",
@@ -63,42 +63,37 @@ const Message = () => {
     {},
     {},
   ];
-  //   const [inputValue, setInputValue] = useState("");
-  // const [showPicker, setShowPicker] = useState(false);
 
-  // // Handle emoji selection
-  // const onEmojiClick = (emojiData) => {
-  //   setInputValue((prevInput) => prevInput + emojiData.emoji); // Correct emoji property
-  //   setShowPicker(false); // Hide emoji picker after selection
-  // };
-  // <div style={{ padding: "20px" }}>
-  //     <h2>Emoji Selector Example</h2>
+  const messages = [
+    { message: "hai", time: "12:35", source: "sender" },
+    { message: "how are you", time: "12:36", source: "sender" },
+    { message: "fine", time: "12:35", source: "receiver" },
+    { message: "hai", time: "12:35", source: "sender" },
+    { message: "how are you", time: "12:36", source: "sender" },
+    { message: "fine", time: "12:35", source: "receiver" },
+    { message: "hai", time: "12:35", source: "sender" },
+    { message: "how are you", time: "12:36", source: "sender" },
+    { message: "fine", time: "12:35", source: "receiver" },
+    { message: "hai", time: "12:35", source: "sender" },
+    { message: "how are you", time: "12:36", source: "sender" },
+    { message: "fine", time: "12:35", source: "receiver" },
+    { message: "hai", time: "12:35", source: "sender" },
+    { message: "how are you", time: "12:36", source: "sender" },
+    { message: "fine", time: "12:35", source: "receiver" },
+  ];
+  const [inputValue, setInputValue] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
 
-  //     {/* Text input field */}
-  //     <input
-  //       type="text"
-  //       value={inputValue}
-  //       onChange={(e) => setInputValue(e.target.value)}
-  //       placeholder="Type a message"
-  //       style={{ padding: "10px", width: "100%", marginBottom: "10px" }}
-  //     />
-
-  //     {/* Button to toggle emoji picker */}
-  //     <button onClick={() => setShowPicker(!showPicker)}>
-  //       {showPicker ? "Close Emoji Picker" : "Open Emoji Picker"}
-  //     </button>
-
-  //     {/* Display emoji picker when `showPicker` is true */}
-  //     {showPicker && (
-  //       <div>
-  //         <EmojiPicker onEmojiClick={onEmojiClick} />
-  //       </div>
-  //     )}
-  //   </div>
+  // Handle emoji selection
+  const onEmojiClick = (emojiData) => {
+    setTyping((prevInput) => prevInput + emojiData.emoji); // Correct emoji property
+    // Hide emoji picker after selection
+  };
 
   return (
-    <div className="absolute  w-full">
+    <div  className="absolute  w-full">
       <div className="flex px-[5%] ">
+        
         <div className="w-[40%] max-h-screen overflow-y-scroll mr-[1%] py-[2%] ">
           <div className="flex justify-between  bg-gray-100 py-[3%] px-[6%]  rounded-[10px]">
             <div className="w-[70%]">
@@ -122,7 +117,7 @@ const Message = () => {
           </div>
 
           <div>
-            {messages.map((message) => {
+            {messageBoxes.map((message) => {
               return (
                 <div className="flex justify-between items-center my-[3%] p-[3%] border-b-[1px]">
                   <img
@@ -151,7 +146,7 @@ const Message = () => {
           </div>
         </div>
 
-        <div className="bg-white shadow-lg w-full max-h-screen overflow-y-scroll  ">
+        <div  className="bg-white shadow-lg w-full max-h-screen overflow-y-scroll   ">
           <div className="flex justify-between items-center px-[1%] pb-[1%] pt-[2%] border-b-[1px]  bg-white z-10 fixed w-[63.7%]">
             <div className="flex items-center font-QSemi">
               <img
@@ -169,41 +164,53 @@ const Message = () => {
           </div>
 
           <div className="relative">
-            <div className="absolute top-[100px] w-full ">
-              <div className="flex flex-col  items-end font-QMedium">
-                <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
-                  <h2 className="mr-2 text-left ">hffffai</h2>
-                  <h3 className="text-gray-500">12:54</h3>
-                </div>
-              </div>
-
-              <div className="flex flex-col  items-start font-QMedium">
-                <div className="bg-gray-100 p-3 mt-4 ml-2 rounded-br-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
-                  <h2 className="mr-2 text-left ">hfffgjhhgghfhgfhfgfai</h2>
-                  <h3 className="text-gray-500">12:54</h3>
-                </div>
-              </div>
-
-              <div className="flex flex-col  items-start font-QMedium">
-                <div className="bg-gray-100 p-3 mt-4 ml-2 rounded-br-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
-                  <h2 className="mr-2 text-left ">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quam facere necessitatibus assumenda possimus, eos minus quasi asperiores veniam eum exercitationem commodi aliquam omnis sapiente sit at officiis. Velit, eum ad.</h2>
-                  <h3 className="text-gray-500">12:54</h3>
-                </div>
-              </div>
+            <div onClick={()=>setShowPicker(false)} className="absolute top-[100px] w-full ">
+              {messages.map((message, index) =>
+                message.source === "receiver" ? (
+                  <div
+                    key={index}
+                    className="flex flex-col items-start font-QMedium"
+                  >
+                    {/* Receiver Message */}
+                    <div className="bg-gray-100 p-3 mt-4 ml-2 rounded-br-3xl rounded-tr-3xl rounded-tl-xl items-start flex max-w-[75%]">
+                      <h2 className="mr-2 text-left">{message.message}</h2>
+                      <h3 className="text-gray-500">{message.time}</h3>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    key={index}
+                    className="flex flex-col items-end font-QMedium"
+                  >
+                    {/* Sender Message */}
+                    <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
+                      <h2 className="mr-2 text-left">{message.message}</h2>
+                      <h3 className="text-gray-500">{message.time}</h3>
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
           <div className="px-[1%] pb-[1%] fixed bottom-0 w-[63.7%] bg-white">
             <div className=" flex justify-between items-center text-[20px] h-[50px] text-gray-500 px-[1%]  bg-white z-10  rounded-[30px] border-[1px]">
-              <FontAwesomeIcon icon={faFaceSmile} />
+              {showPicker && (
+                <div className="absolute bottom-[64px]" >
+                  <EmojiPicker onEmojiClick={onEmojiClick} />
+                </div>
+              )}
+              <button onClick={() => setShowPicker(!showPicker)}>
+                <FontAwesomeIcon icon={faFaceSmile} />
+              </button>
               <input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={typing}
+                onChange={(e) => setTyping(e.target.value)}
                 className="w-[80%] outline-none font-QRegular text-[18px] "
                 type="text"
                 placeholder="Message..."
               />
-              {message ? (
+              {typing ? (
                 <button className="w-[15%] font-QBold text-[#8735C8] ">
                   send
                 </button>
