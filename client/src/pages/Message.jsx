@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import basil from "../images/basil.jpg";
 import user2 from "../images/IMG_6351.jpeg";
-import feed2 from "../images/IMG_8890.jpeg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBookmark,
-  faCommentDots,
+ 
   faFaceSmile,
-  faPaperPlane,
+  
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faCircleInfo,
@@ -20,16 +18,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import EmojiPicker from "emoji-picker-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Comments from "../components/Comments";
 import ChatBox from "../components/ChatBox";
 
 const Message = () => {
   const [typing, setTyping] = useState("");
 
-  const [content, setContent] = useState(
-   
-  );
-console.log(content);
+ 
 
   const messageBoxes = [
     {
@@ -80,7 +74,7 @@ console.log(content);
     { message: "how are you", time: "12:36", source: "sender" },
     { message: "fine", time: "12:35", source: "receiver" },
   ];
-  const [inputValue, setInputValue] = useState("");
+  
   const [showPicker, setShowPicker] = useState(false);
 
   // Handle emoji selection
@@ -299,7 +293,7 @@ console.log(content);
                 placeholder="Message..."
               />
               {typing ? (
-                <button className="w-[15%] font-QBold text-[#8735C8] ">
+                <button className="w-[15%] font-QBold text-[#8735C8] max-[930px]:w-[25%] flex justify-end p-[1%] ">
                   send
                 </button>
               ) : (
