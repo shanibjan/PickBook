@@ -86,48 +86,48 @@ const Posts = () => {
     //             <h3 className="text-gray-500">12:54</h3>
     //           </div>
     
-    <div className="relative">
-      <div className=" w-[90%] m-[5%] top-[95px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
-        <div className="px-[10%] py-[2%] bg-white rounded-[10px] shadow-lg">
+    <div className="relative" >
+      <div className=" w-[90%]  m-[5%] absolute top-[20px] max-[600px]:top-[35px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
+        <div className="px-[10%] max-[900px]:px-[5%] py-[2%] mt-[2%] max-[930px]:mt-[6%] bg-white rounded-[10px] shadow-lg">
           <div className="flex justify-between pb-[3%] border-b-[1px] ">
-            <div className="h-[60px]">
+            <div className="h-[60px] max-[600px]:h-[40px] max-[425px]:h-[35px]">
               <img className="h-full" src={user} alt="" />
             </div>
             <input
-              className="w-[93%] px-[3%] bg-gray-100 font-QRegular outline-none rounded-[20px]"
+              className="w-[93%] max-[425px]:text-[12px] px-[3%] bg-gray-100 font-QRegular outline-none rounded-[20px]"
               type="text"
               placeholder="What do you want to share today..!"
             />
           </div>
           <div className="flex justify-between mt-[3%]">
-            <div className="file-input w-[13%] flex justify-between items-center">
+            <div className="file-input flex justify-between items-center">
               <input type="file" id="file" class="file" />
               <FontAwesomeIcon className="text-orange-400" icon={faImage} />
-              <label className="cursor-pointer font-QSemi " for="file">
+              <label className="cursor-pointer font-QSemi max-[425px]:text-[12px] ml-[15%] " for="file">
                 Photo/Video
               </label>
             </div>
 
-            <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] rounded-[20px] ">
+            <button className="bg-[#8735C8] max-[425px]:text-[12px] font-QSemi text-white px-[5%] py-[1%] rounded-[20px] ">
               Post
             </button>
           </div>
         </div>
 
-        <div className="my-[6%] grid grid-cols-2 gap-[2%] max-[850px]:grid-cols-1">
+        <div className="mt-[6%] max-[425px]:mt-[13%] max-[850px]:mb-[30%] max-[450px]:mb-[37%] grid grid-cols-2 gap-[2%] max-[850px]:grid-cols-1">
           {Post.map((item) => {
             return (
-              <div className="bg-white shadow-lg   p-[3%] rounded-[20px]">
+              <div className="bg-white shadow-lg   p-[3%] rounded-[10px]">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center w-[70%]">
                     <img
-                      className="h-[60px] w-[60px] object-cover rounded-[50%]"
+                      className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
                       src={item.img}
                       alt=""
                     />
                     <div className="text-start ml-[5%]">
-                      <h1 className="font-QSemi">{item.name}</h1>
-                      <p className="font-QRegular text-gray-500">{item.date}</p>
+                      <h1 className="font-QSemi max-[425px]:text-[15px] ">{item.name}</h1>
+                      <p className="font-QRegular text-gray-500 max-[425px]:text-[12px]">{item.date}</p>
                     </div>
                   </div>
                   <div>
@@ -139,18 +139,18 @@ const Posts = () => {
                 </div>
                 <div>
                   <div className="my-[4%]">
-                    <p className=" text-left font-QMedium">{item.desc}</p>
+                    <p className=" text-left font-QMedium max-[425px]:text-[12px]">{item.desc}</p>
                   </div>
 
                   <img
-                    className="rounded-[20px] w-full h-[568px] object-cover "
+                    className="rounded-[20px] max-[425px]:rounded-[8px] w-full h-full aspect-square object-cover "
                     src={item.post}
                     alt=""
                   />
                 </div>
                 <div className="mx-[1%] mt-[4%]">
-                  <div className="flex justify-between font-QSemi pb-[2%] border-b-[1px] ">
-                    <div className="flex justify-between w-[40%]">
+                  <div className="flex justify-between font-QSemi pb-[2%] border-b-[1px] max-[425px]:text-[13px] ">
+                    <div className="flex justify-between w-[45%] max-[1200px]:w-[50%] max-[1000px]:w-[60%] max-[850px]:w-[35%] max-[740px]:w-[45%] max-[560px]:w-[55%] max-[475px]:w-[63%]">
                       <p>{item.like} Likes</p>
                       <p>•</p>
                       <p>{item.comment} Comments</p>
@@ -160,8 +160,8 @@ const Posts = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-between mt-[2%] text-[25px]">
-                    <div className="flex w-[25%] justify-between cursor-pointer">
+                  <div className="flex justify-between mt-[2%] text-[25px] max-[1000px]:text-[20px] max-[425px]:text-[15px]">
+                    <div className="flex w-[25%] justify-between cursor-pointer max-[1000px]:w-[35%]">
                       <FontAwesomeIcon icon={faHeart} />
                       <FontAwesomeIcon
                         onClick={() => setIsCommentVisible(true)}

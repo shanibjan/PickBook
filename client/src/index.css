@@ -69,6 +69,13 @@ code {
  
   width: 100%;
 }
-
+.text-line {
+ width: 90%;
+  white-space: nowrap; /* Prevent the text from wrapping */
+  overflow: hidden; /* Hide any overflow */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+ 
+ 
+}
 
 
