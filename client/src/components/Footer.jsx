@@ -12,8 +12,8 @@ import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const nav=useNavigate()
-  const a=["abcd efg"]
-  console.log(a[0].length);
+  
+  
   
   
   

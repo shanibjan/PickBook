@@ -13,13 +13,17 @@ import feed from "../images/br.jpg";
 import feed2 from "../images/IMG_8890.jpeg";
 import feed3 from "../images/IMG_1515.jpeg";
 import { useNavigate } from "react-router-dom";
+import Login from "./Login";
 
 const UserProfile = () => {
   const posts = [{ src: feed }, { src: feed2 }, { src: feed3 }];
   const nav=useNavigate()
+  const user = JSON.parse(localStorage.getItem("pickbook-user"));
   return (
     <div className="absolute top-[70px] w-full">
-      <NavBar />
+      {user?(
+        <div>
+              <NavBar />
       <div className="mx-[5%] max-[425px]:mx-[2%] bg-[#FAFAFA] p-[3%] max-[850px]:px-[4%] max-[420px]:px-[2%] rounded-[20px]">
         <div className="bg-white px-[10%] max-[1035px]:px-[5%] py-[3%] shadow-lg rounded-[20px]">
           <div className="flex justify-between  ">
@@ -126,6 +130,9 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+        </div>
+      ): <Login/>}
+      
       <Footer />
     </div>
   );

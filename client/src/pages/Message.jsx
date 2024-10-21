@@ -19,11 +19,14 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatBox from "../components/ChatBox";
+import { useNavigate } from "react-router-dom";
+import Login from "./Login";
 
 const Message = () => {
+  const nav=useNavigate()
   const [typing, setTyping] = useState("");
 
- 
+  const user = JSON.parse(localStorage.getItem("pickbook-user"));
 
   const messageBoxes = [
     {
@@ -102,7 +105,7 @@ const Message = () => {
 
   return (
     <div className="absolute  w-full h-screen">
-      <div className="flex px-[2%] h-full  ">
+      {user?(<div className="flex px-[2%] h-full  ">
         <div className="w-[40%] max-[1240px]:w-[60%] max-[960px]:w-[80%] max-[800px]:w-full h-screen overflow-y-scroll mr-[1%] py-[2%] max-[800px]:hidden ">
           <div className="flex justify-between  bg-gray-100 py-[3%] px-[6%]  rounded-[10px]">
             <div className="w-[70%]">
@@ -306,7 +309,8 @@ const Message = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>):<Login/>}
+      
       <AnimatePresence>
         {isCommentVisible && (
           <motion.div

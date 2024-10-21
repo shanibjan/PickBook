@@ -19,7 +19,7 @@ const NavBar = () => {
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
   };
-  console.log(isCommentVisible);
+  
 
   useEffect(() => {
     if (isCommentVisible === true) {
@@ -32,7 +32,7 @@ const NavBar = () => {
   return (
     <div>
       <div className="flex justify-between text-gray-700 items-center px-[5%] fixed w-full z-10 bg-white top-0">
-        <div className="flex justify-start items-center w-[20%] max-[1310px]:w-[25%] max-[1050px]:w-[32%] max-[800px]:w-[45%] max-[600px]:w-[25%]">
+        <div onClick={()=>nav('/')} className="flex cursor-pointer justify-start items-center w-[20%] max-[1310px]:w-[25%] max-[1050px]:w-[32%] max-[800px]:w-[45%] max-[600px]:w-[25%]">
           <div className="h-[80px] w-[80px] max-[425px]:w-[70px] max-[425px]:h-[70px] ">
             <img className="h-full w-full" src={logo} alt="" />
           </div>
@@ -57,7 +57,7 @@ const NavBar = () => {
             />
           </div>
         </div>
-        <div className="flex justify-between w-[20%] max-[800px]:hidden">
+        <div className="flex justify-between items-center cursor-pointer w-[20%] max-[800px]:hidden">
           <div className="h-[25px]">
             <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
           </div>
@@ -67,7 +67,7 @@ const NavBar = () => {
           <div className="h-[25px]" onClick={() => setIsCommentVisible(true)}>
             <FontAwesomeIcon icon={faBell} className="w-full h-full" />
           </div>
-          <div className="h-[25px]">
+          <div onClick={()=>nav('/profile')} className="h-[50px]">
             <img className="h-full" src={user} alt="" />
           </div>
         </div>
