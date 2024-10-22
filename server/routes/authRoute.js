@@ -45,6 +45,39 @@ router.post("/send-otp", async (req, res) => {
   }
 });
 
+router.post("/send-otp-forgot-password", async (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).send({ message: "Enter a Phone number" });
+    }
+
+    const user = await userModel.findOne({ phone });
+
+    // Existing user
+    if (!user) {
+      return res.status(200).send({
+        success: false,
+        message: "Not registered with this number",
+      });
+    }
+
+    await client.verify.v2
+      .services("VAb8cfca6eabf94d6b46362920b98cbf5b")
+      .verifications.create({ to: phone, channel: "sms" })
+      .then((verification) => console.log(verification.sid));
+
+    res.status(200).send({ success: true, message: "OTP send successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in sending OTP",
+      error,
+    });
+  }
+});
+
 router.post("/verify-phone", async (req, res) => {
   try {
     const { phone, otp } = req.body;
@@ -175,5 +208,28 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+
+router.put('/change-password',async(req,res)=>{
+  try {
+    const{phone,password}=req.body
+
+  const user= await userModel.findOne({ phone });
+  const hashedPassword = await hashPassword(password);
+  user.password=hashedPassword
+  await user.save();
+
+  res.status(200).send({ success: true, message: 'Password changed successfully' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error updating password',
+      error,
+    });
+  }
+  
+})
 
 export default router;

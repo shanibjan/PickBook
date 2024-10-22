@@ -180,7 +180,7 @@ const Signup = ({}) => {
             </button>
           )}
 
-          <h4 className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]">
+          <h4 onClick={()=>nav('/login')} className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]">
             Go to Login page
           </h4>
         </div>

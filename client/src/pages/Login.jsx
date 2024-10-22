@@ -4,11 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = ({}) => {
+const Login = () => {
   const [phone, setPhone] = useState("+91");
   const [valid, setValid] = useState(true);
   const [password, setPassword] = useState();
-  console.log(phone);
+
+  const [otp, setOtp] = useState();
+
+  const [bar, setBar] = useState("login");
+  
 
   const nav = useNavigate();
 
@@ -45,6 +49,52 @@ const Login = ({}) => {
       window.alert(error.response.data.message);
     }
   };
+  const sendOtp=async()=>{
+    try {
+      if (valid === false) {
+        const res = await axios.post("api/v1/auth/send-otp-forgot-password", { phone });
+        window.alert(res.data.message);
+        
+        if (res.data.success) {
+          
+          setBar("verifyotp");
+        }
+      } else {
+        window.alert("Enter a valid Phone number ");
+      }
+    } catch (error) {
+      window.alert(error.response.data.message);
+    }
+  }
+
+  const verifyOtp = async () => {
+    try {
+      const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
+      console.log(res.data);
+      if (res.data.success) {
+        window.alert(res.data.message);
+        setBar("changepassword");
+      }
+    } catch (error) {
+      window.alert(error.response.data.message);
+    }
+  };
+
+  const changePassword=async()=>{
+    try {
+      console.log("hi");
+      
+      const res= await axios.put('api/v1/auth/change-password',{phone,password})
+      console.log(res.data);
+      if (res.data.success) {
+        window.alert(res.data.message);
+        setBar("login");
+      }
+      
+    } catch (error) {
+      window.alert(error.response.data.message);
+    }
+  }
   return (
     <div className="h-screen">
       <div className="flex  items-center justify-center">
@@ -63,49 +113,141 @@ const Login = ({}) => {
           <h4 className="text-[30px] max-[550px]:text-[20px] max-[370px]:text-[15px] font-QSemi text-[#244262] my-[4%] ">
             Provide User information here
           </h4>
-          <div>
-            <input
-              className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
-              type="text"
-              placeholder="Enter your phone number"
-              value={phone}
-              onChange={handleInputChange}
+
+          {bar === "login" ? (
+            <div>
+              <input
+                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
+                type="text"
+                placeholder="Enter your phone number"
+                value={phone}
+                onChange={handleInputChange}
+              />
+              <br />
+              <AnimatePresence>
+                {valid && (
+                  <motion.div
+                    key="error-message" // Add a unique key for AnimatePresence
+                    initial={{ y: -10 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-red-500 absolute left-0 right-0 font-QRegular max-[560px]:text-[12px]"
+                  >
+                    Enter a valid phone number
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <br />
+              <input
+                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] mt-[7%] "
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          ) : bar === "sendotp" ? (
+            <div>
+              <input
+                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
+                type="text"
+                placeholder="Enter your phone number"
+                value={phone}
+                onChange={handleInputChange}
+              />
+              <br />
+              <AnimatePresence>
+                {valid && (
+                  <motion.div
+                    key="error-message" // Add a unique key for AnimatePresence
+                    initial={{ y: -10 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-red-500 absolute left-0 right-0 font-QRegular max-[560px]:text-[12px]"
+                  >
+                    Enter a valid phone number
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : bar === "verifyotp" ? (
+            <div>
+              <input
+                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
+                type="number"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <br />
+              <p className="font-QMedium cursor-pointer text-[#8735C8]">
+                Didn't get the code ?.Resend Code
+              </p>
+            </div>
+          ) : bar === "changepassword" ? (
+            <div>
+
+              <p>Phone Verified Successfully.You can set new password</p>
+                <input
+              className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] mt-[7%] "
+              type="password"
+              placeholder="Create new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <br />
-            <AnimatePresence>
-              {valid && (
-                <motion.div
-                  key="error-message" // Add a unique key for AnimatePresence
-                  initial={{ y: -10 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-red-500 absolute left-0 right-0 font-QRegular max-[560px]:text-[12px]"
-                >
-                  Enter a valid phone number
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <br />
-          <input
-            className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] mt-[7%] "
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            </div>
+            
+          ) : null}
+
           <br />
 
-          <p className="font-QMedium cursor-pointer max-[560px]:text-[12px] text-[#8735C8]" >Forgot password?</p>
+          {bar === "login" && (
+            <p
+              onClick={() => setBar("sendotp")}
+              className="font-QMedium cursor-pointer max-[560px]:text-[12px] text-[#8735C8]"
+            >
+              Forgot password?
+            </p>
+          )}
 
-          <button
-            onClick={login}
-            className="bg-[#8735C8] py-[1%] px-[5%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
+          {bar === "login" ? (
+            <button
+              onClick={login}
+              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
+            >
+              LOGIN
+            </button>
+          ) : bar === "sendotp" ? (
+            <button
+            onClick={sendOtp}
+             
+              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
+            >
+              SEND OTP
+            </button>
+          ) : bar === "verifyotp" ? (
+            <button
+            onClick={verifyOtp}
+              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
+            >
+              VERIFY OTP
+            </button>
+          ) : (
+            <button
+            onClick={changePassword}
+            
+              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
+            >
+              CHANGE PASSWORD
+            </button>
+          )}
+
+          <h4
+            onClick={() => nav("/signup")}
+            className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]"
           >
-            LOGIN
-          </button>
-          <h4 onClick={()=>nav('/signup')} className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]">
             Go to Register page
           </h4>
         </div>
