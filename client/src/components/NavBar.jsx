@@ -7,18 +7,43 @@ import {
   faSquarePlus,
 } from "@fortawesome/free-regular-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import user from "../images/user.png";
+import userimg from "../images/user.png";
 import Comments from "./Comments";
 import { motion, AnimatePresence } from "framer-motion";
 import Notification from "./Notifications";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 const NavBar = () => {
   const nav =useNavigate()
   const [isCommentVisible, setIsCommentVisible] = useState(false);
+  const [profiledata, setProfileData] = useState([]);
+  console.log(profiledata);
+  
 
+  const user = JSON.parse(localStorage.getItem("pickbook-user"));
+
+  const userId = user ? user._id : null;
+  const userName = user ? user.name : null;
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
   };
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get( `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`);
+      if (res) {
+        setProfileData(res.data);
+      } else {
+        setProfileData([]);
+      }
+    } catch (error) {
+
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
   
 
   useEffect(() => {
@@ -67,8 +92,9 @@ const NavBar = () => {
           <div className="h-[25px]" onClick={() => setIsCommentVisible(true)}>
             <FontAwesomeIcon icon={faBell} className="w-full h-full" />
           </div>
-          <div onClick={()=>nav('/profile')} className="h-[50px]">
-            <img className="h-full" src={user} alt="" />
+          <div onClick={()=>nav(`/user/${userName}`)} className="h-[50px]">
+            {profiledata.length>0?( <img className="h-full aspect-square rounded-[50%]" src={profiledata[0].image} alt="" />):( <img className="h-full" src={userimg} alt="" />)}
+           
           </div>
         </div>
       </div>

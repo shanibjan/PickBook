@@ -123,11 +123,6 @@ router.post("/register", async (req, res) => {
 
     // Register user
     const hashedPassword = await hashPassword(password);
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-    // Save user
     const user = await new userModel({
       name,
       phone,
@@ -135,6 +130,12 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
     }).save();
 
+    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+    // Save user
+    
     // body: `Your verification code is: ${verificationCode}`,
 
     res.status(201).send({

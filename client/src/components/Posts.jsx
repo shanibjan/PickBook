@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import user from "../images/user.png";
-import user2 from "../images/IMG_6351.jpeg";
-import user3 from "../images/IMG_5034.JPG";
+import user1 from "../images/user.png";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImage,
@@ -11,15 +10,86 @@ import {
   faBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import feed from "../images/br.jpg";
-import feed2 from "../images/IMG_8890.jpeg";
-import feed3 from "../images/IMG_1515.jpeg";
+
 import axios from "axios";
 import Comments from "./Comments";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./Footer";
+import imageCompression from 'browser-image-compression';
+import { useNavigate } from "react-router-dom";
 const Posts = () => {
+  const nav=useNavigate()
   const [isCommentVisible, setIsCommentVisible] = useState(false);
+  const [description, setDescription] = useState();
+  const [post, setPost] = useState([]);
+  const [image, setImage] = useState();
+  const [profiledata, setProfileData] = useState([]);
+
+
+  const user = JSON.parse(localStorage.getItem("pickbook-user"));
+
+  const userId = user ? user._id : null;
+  const userName = user ? user.name : null;
+
+  const fetchPost = async () => {
+    try {
+      const res = await axios.get(`api/v1/user/get-allposts`);
+      if (res) {
+        setPost(res.data);
+      } else {
+        setPost([]);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(()=>{
+    fetchPost();
+  },[])
+  post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const store = async(e) => {
+    let val = e.target.files[0];
+
+    const options = {
+      maxSizeMB: 1, // Maximum file size (in MB)
+      maxWidthOrHeight: 800, // Max width or height in pixels
+      useWebWorker: true, // Use web workers for performance
+    };
+
+    
+
+    try {
+      // Compress the image
+      const compressedFile = await imageCompression(val, options);
+  
+      const reader = new FileReader();
+      reader.readAsDataURL(compressedFile); // Convert the compressed image to base64
+  
+      reader.addEventListener("load", () => {
+        let imageLoader = reader.result;
+  
+        // Set the compressed image as base64
+        setImage(imageLoader);
+      });
+    } catch (error) {
+      console.log('Error during image compression:', error);
+    }
+  };
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get( `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`);
+      if (res) {
+        setProfileData(res.data);
+      } else {
+        setProfileData([]);
+      }
+    } catch (error) {
+
+    }
+  };
+
+  
 
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
@@ -27,6 +97,8 @@ const Posts = () => {
 
   useEffect(() => {
     handleDataFromChild();
+   
+    fetchProfile()
   }, []);
 
   useEffect(() => {
@@ -37,38 +109,19 @@ const Posts = () => {
     }
   }, [isCommentVisible]);
 
-  const Post = [
-    {
-      img: user,
-      name: "Shanib Jan",
-      date: "12 April at 09:29 PM",
-      desc: "Fitting perfectly? Fitting title cardsto actors 💀 ",
-      like: "10",
-      comment: "5",
-      share: "7",
-      post: feed,
-    },
-    {
-      img: user2,
-      name: "Anirudh ",
-      date: "05 May at 09:29 PM",
-      desc: "Take a look at our vision for the new desian conceot for cosmetics websitecalled Best Gow! @ Thanks for vour likes and comments ❤️",
-      like: "156",
-      comment: "53",
-      share: "17",
-      post: feed2,
-    },
-    {
-      img: user3,
-      name: "Jaffer_xasons ",
-      date: "05 Dec at 09:29 PM",
-      desc: "Take a look at our vision for the new desian  comments ❤️",
-      like: "356",
-      comment: "153",
-      share: "17",
-      post: feed3,
-    },
-  ];
+  
+
+  const addPost=async()=>{
+      try {
+        const res= await axios.post('api/v1/user/add-post',{userId,description,image,userName,userImage:profiledata[0].image})
+        console.log(res.data);
+        fetchPost();
+        
+      } catch (error) {
+        window.alert(error.response.data.message);
+        
+      }
+  }
   return (
     // <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
     //             <h2 className="mr-2 text-left  ">
@@ -85,49 +138,66 @@ const Posts = () => {
     //             </h2>
     //             <h3 className="text-gray-500">12:54</h3>
     //           </div>
-    
-    <div className="relative" >
+
+    <div className="relative">
       <div className=" w-[90%]  m-[5%] absolute top-[20px] max-[600px]:top-[35px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
         <div className="px-[10%] max-[900px]:px-[5%] py-[2%] mt-[2%] max-[930px]:mt-[6%] bg-white rounded-[10px] shadow-lg">
           <div className="flex justify-between pb-[3%] border-b-[1px] ">
             <div className="h-[60px] max-[600px]:h-[40px] max-[425px]:h-[35px]">
-              <img className="h-full" src={user} alt="" />
+            {profiledata.length>0?( <img className="h-full aspect-square rounded-[50%]" src={profiledata[0].image} alt="" />):( <img className="h-full" src={user1} alt="" />)}
             </div>
             <input
               className="w-[93%] max-[425px]:text-[12px] px-[3%] bg-gray-100 font-QRegular outline-none rounded-[20px]"
               type="text"
               placeholder="What do you want to share today..!"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
           <div className="flex justify-between mt-[3%]">
             <div className="file-input flex justify-between items-center">
-              <input type="file" id="file" class="file" />
+              <input
+                type="file"
+                id="file"
+                class="file"
+                accept=".jpg,.jpeg,.png"
+                onChange={store}
+              />
               <FontAwesomeIcon className="text-orange-400" icon={faImage} />
-              <label className="cursor-pointer font-QSemi max-[425px]:text-[12px] ml-[15%] " for="file">
+              <label
+                className="cursor-pointer font-QSemi max-[425px]:text-[12px] ml-[15%] "
+                for="file"
+              >
                 Photo/Video
               </label>
             </div>
 
-            <button className="bg-[#8735C8] max-[425px]:text-[12px] font-QSemi text-white px-[5%] py-[1%] rounded-[20px] ">
+            <button onClick={addPost} className="bg-[#8735C8] max-[425px]:text-[12px] font-QSemi text-white px-[5%] py-[1%] rounded-[20px] ">
               Post
             </button>
           </div>
         </div>
 
         <div className="mt-[6%] max-[425px]:mt-[13%] max-[850px]:mb-[30%] max-[450px]:mb-[37%] grid grid-cols-2 gap-[2%] max-[850px]:grid-cols-1">
-          {Post.map((item) => {
+          {post.map((item) => {
+        
+
             return (
               <div className="bg-white shadow-lg   p-[3%] rounded-[10px]">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center w-[70%]">
                     <img
                       className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
-                      src={item.img}
+                      src={item.userImage}
                       alt=""
                     />
                     <div className="text-start ml-[5%]">
-                      <h1 className="font-QSemi max-[425px]:text-[15px] ">{item.name}</h1>
-                      <p className="font-QRegular text-gray-500 max-[425px]:text-[12px]">{item.date}</p>
+                      <h1 onClick={()=>nav(`/user/${item.userName}`)} className="font-QSemi cursor-pointer max-[425px]:text-[15px] ">
+                        {item.userName}
+                      </h1>
+                      <p className="font-QRegular text-gray-500 max-[425px]:text-[12px]">
+                        {item.createdAt}
+                      </p>
                     </div>
                   </div>
                   <div>
@@ -139,12 +209,14 @@ const Posts = () => {
                 </div>
                 <div>
                   <div className="my-[4%]">
-                    <p className=" text-left font-QMedium max-[425px]:text-[12px]">{item.desc}</p>
+                    <p className=" text-left font-QMedium max-[425px]:text-[12px]">
+                      {item.description}
+                    </p>
                   </div>
 
                   <img
                     className="rounded-[20px] max-[425px]:rounded-[8px] w-full h-full aspect-square object-cover "
-                    src={item.post}
+                    src={item.image}
                     alt=""
                   />
                 </div>

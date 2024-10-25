@@ -11,7 +11,7 @@ const Signup = ({}) => {
   const [otp, setOtp] = useState();
   const [password, setPassword] = useState();
   const [bar, setBar] = useState("phone");
-  console.log(otp);
+  
 
   const nav=useNavigate()
 

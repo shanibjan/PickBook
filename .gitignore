@@ -5,6 +5,7 @@
 client/node_modules
 /.pnp
 .pnp.js
+/server/service/fb-pickbook-otp-firebase-adminsdk-z9bx2-8c056a3b3a.json
 
 # testing
 /coverage

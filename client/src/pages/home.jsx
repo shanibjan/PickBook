@@ -32,7 +32,7 @@ const Home = () => {
           <NavBar datas={isCommentVisible} />
 
           <Posts />
-          <Footer onDataSend={handleDataFromChild} />
+          <Footer onDataSend={handleDataFromChild}  />
         </div>
       ) : nav('/login')}
     </div>
