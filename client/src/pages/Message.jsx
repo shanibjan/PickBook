@@ -21,6 +21,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChatBox from "../components/ChatBox";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
+import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
 
 const Message = () => {
   const nav=useNavigate()
@@ -105,6 +107,7 @@ const Message = () => {
 
   return (
     <div className="absolute  w-full h-screen">
+      <NavBar/>
       {user?(<div className="flex px-[2%] h-full  ">
         <div className="w-[40%] max-[1240px]:w-[60%] max-[960px]:w-[80%] max-[800px]:w-full h-screen overflow-y-scroll mr-[1%] py-[2%] max-[800px]:hidden ">
           <div className="flex justify-between  bg-gray-100 py-[3%] px-[6%]  rounded-[10px]">
@@ -325,6 +328,7 @@ const Message = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <Footer/>
     </div>
   );
 };

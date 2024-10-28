@@ -16,13 +16,13 @@ import axios from "axios";
 const NavBar = () => {
   const nav =useNavigate()
   const [isCommentVisible, setIsCommentVisible] = useState(false);
-  const [profiledata, setProfileData] = useState([]);
-  console.log(profiledata);
+  const [profiledata, setProfileData] = useState();
+  
   
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
 
-  const userId = user ? user._id : null;
+  
   const userName = user ? user.name : null;
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
@@ -32,9 +32,9 @@ const NavBar = () => {
     try {
       const res = await axios.get( `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
-        setProfileData(res.data);
+        setProfileData(res.data.profile);
       } else {
-        setProfileData([]);
+        setProfileData();
       }
     } catch (error) {
 
@@ -93,7 +93,7 @@ const NavBar = () => {
             <FontAwesomeIcon icon={faBell} className="w-full h-full" />
           </div>
           <div onClick={()=>nav(`/user/${userName}`)} className="h-[50px]">
-            {profiledata.length>0?( <img className="h-full aspect-square rounded-[50%]" src={profiledata[0].image} alt="" />):( <img className="h-full" src={userimg} alt="" />)}
+            {profiledata?( <img className="h-full aspect-square object-cover rounded-[50%]" src={profiledata.image} alt="" />):( <img className="h-full" src={userimg} alt="" />)}
            
           </div>
         </div>

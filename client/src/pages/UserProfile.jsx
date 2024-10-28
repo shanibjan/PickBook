@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import userProfile from "../images/IMG_6351.jpeg";
+import userProfile from "../images/user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsis,
@@ -9,24 +9,38 @@ import {
   faMessage,
   faTableCells,
 } from "@fortawesome/free-solid-svg-icons";
-import feed from "../images/br.jpg";
-import feed2 from "../images/IMG_8890.jpeg";
-import feed3 from "../images/IMG_1515.jpeg";
+
 import { useNavigate, useParams } from "react-router-dom";
 import Login from "./Login";
 import axios from "axios";
 
 const UserProfile = () => {
   const { pickBookUserName } = useParams();
-  console.log(pickBookUserName);
 
-  const [profiledata, setProfileData] = useState([]);
+  const [profiledata, setProfileData] = useState();
+  const [userDetails, setUserDetails] = useState();
   const [post, setPost] = useState([]);
-  console.log(profiledata);
-
+  const [allComment, setAllComment] = useState([]);
+const[followers,setFollowers]=useState([])
   const nav = useNavigate();
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
+  const userId = user ? user._id : null;
   const userName = user ? user.name : null;
+
+  console.log(followers);
+
+  const fetchComment = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/v1/user/get-all-comments`
+      );
+      if (res) {
+        setAllComment(res.data);
+      } else {
+        setAllComment([]);
+      }
+    } catch (error) {}
+  };
 
   const fetchProfile = async () => {
     try {
@@ -34,9 +48,11 @@ const UserProfile = () => {
         `http://localhost:7000/api/v1/user/get-profile-for-users/${pickBookUserName}`
       );
       if (res) {
-        setProfileData(res.data);
+        setProfileData(res.data.profile);
+        setUserDetails(res.data.userDetails);
+        setFollowers(res.data.followers)
       } else {
-        setProfileData([]);
+        setProfileData();
       }
     } catch (error) {}
   };
@@ -54,15 +70,41 @@ const UserProfile = () => {
     } catch (error) {}
   };
 
+  const follow = async()=>{
+    try {
+      const res=await axios.post('http://localhost:7000/api/v1/user/follow',{followerId:userId,followingId:userDetails._id})
+      fetchProfile()
+      console.log(res.data);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  const unfollow = async()=>{
+    try {
+      const res=await axios.post('http://localhost:7000/api/v1/user/unfollow',{followerId:userId,followingId:userDetails._id})
+      fetchProfile()
+      console.log(res.data);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   useEffect(() => {
     fetchPost();
     fetchProfile();
+    fetchComment();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchPost();
     fetchProfile();
-  },[pickBookUserName])
+    fetchComment();
+  }, [pickBookUserName]);
   return (
     <div className="absolute top-[70px] w-full">
       {user ? (
@@ -72,10 +114,10 @@ const UserProfile = () => {
             <div className="bg-white px-[10%] max-[1035px]:px-[5%] py-[3%] shadow-lg rounded-[20px]">
               <div className="flex justify-between  ">
                 <div className="flex  items-center w-[30%] ">
-                  {profiledata.length > 0 ? (
+                  {profiledata ? (
                     <img
                       className="h-[250px] aspect-square rounded-[50%] object-cover shadow-lg max-[1245px]:h-[200px]  max-[1000px]:h-[150px]  max-[850px]:h-[100px]  max-[650px]:h-[70px] max-[360px]:h-[60px]   "
-                      src={profiledata[0].image}
+                      src={profiledata.image}
                       alt=""
                     />
                   ) : (
@@ -105,16 +147,37 @@ const UserProfile = () => {
                       </div>
                     ) : (
                       <div className=" flex justify-between w-[60%] max-[750px]:hidden">
-                        <button className="bg-[#8735C8] font-QSemi text-white px-[15%] max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
-                          Follow
-                        </button>
+                       {userDetails && userDetails.followers.includes(userId) ? (
+                      <button onClick={unfollow} className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
+                        Unfollow
+                      </button>
+                    ) : (
+                      <button  onClick={follow} className="bg-[#8735C8] font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
+                        Follow
+                      </button>
+                    )}
                         <button className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
                           Message
                         </button>
                       </div>
                     )}
 
-                    <FontAwesomeIcon icon={faEllipsis} />
+                    <div className="dropdown">
+                      <FontAwesomeIcon icon={faEllipsis} />
+
+                      <ul className="dropdown-menu text-[#244262] leading-[35px] max-[1000px]:px-[20px] max-[1000px]:left-[-80px] max-[550px]:text-[11px] max-[500px]:left-[-110px] max-[1000px]:w-[150px] ">
+                        <li
+                          className="font-QSemi"
+                          onClick={() => {
+                            localStorage.removeItem("pickbook-user");
+                            localStorage.removeItem("pickbook-token");
+                            nav("/login");
+                          }}
+                        >
+                          {"Logout"}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <div className="flex justify-between font-QSemi text-[20px] max-[425px]:text-[15px] my-[5%] w-[97%]">
                     <div className="flex max-[650px]:grid ">
@@ -123,32 +186,43 @@ const UserProfile = () => {
                     </div>
 
                     <div className="flex max-[650px]:grid">
-                      <h1 className="mr-[12%]">104</h1>
+                      <h1 className="mr-[12%]">
+                        {userDetails && userDetails.followers.length}
+                      </h1>
                       <p className="max-[500px]:text-[12px]">Followers</p>
                     </div>
                     <div className="flex max-[650px]:grid">
-                      <h1 className="mr-[12%]">134</h1>
+                      <h1 className="mr-[12%]">
+                        {userDetails && userDetails.following.length}
+                      </h1>
                       <p className="max-[500px]:text-[12px]">Following</p>
                     </div>
                   </div>
                   <div className="max-[750px]:hidden">
                     <div className="font-QSemi text-start">
-                      <h2>
-                        {profiledata.length > 0 ? profiledata[0].bio : null}
-                      </h2>
+                      <h2>{profiledata ? profiledata.bio : null}</h2>
                     </div>
-                    <div className="flex font-QMedium  my-[3%]">
+                    {followers.length>0 &&<div className="flex font-QMedium  my-[3%]">
+                      
                       <p className="text-gray-500 mr-[1%]">Followed by </p>
-                      <p className="font-QSemi">abrham_m ,</p>
-                      <p className="font-QSemi ">kennedy_jon</p>
-                      <p className="text-gray-500 ml-[1%]">and 55 more</p>
-                    </div>
+                      {followers.length>0 && followers.map((follower,index)=>{
+                        if(index<2)
+                        return(
+                          <p className="font-QSemi">{follower.name} ,</p>
+                        )
+                      })}
+                     
+                    {followers.length>2&&
+                     <p className="text-gray-500 ml-[1%]">and {followers.length-2} more</p>}
+                     
+                    </div>}
+                    
                   </div>
                 </div>
               </div>
               <div className=" hidden max-[540px]:text-[12px] max-[750px]:block">
                 <div className="font-QSemi text-start">
-                  <h2>{profiledata.length > 0 ? profiledata[0].bio : null}</h2>
+                  <h2>{profiledata ? profiledata.bio : null}</h2>
                 </div>
                 <div className="flex font-QMedium  my-[3%]">
                   <p className="text-gray-500 mr-[1%]">Followed by </p>
@@ -156,22 +230,35 @@ const UserProfile = () => {
                   <p className="font-QSemi max-[360px]:hidden">kennedy_jon</p>
                   <p className="text-gray-500 ml-[1%]">and 55 more</p>
                 </div>
-                {pickBookUserName===userName?(<div className="flex">
-                  <button onClick={() => nav("/edit-profile")} className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
-                   Edit Profile
-                  </button>
-                  <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
-                   Share Profile
-                  </button>
-                </div>):(<div className="flex">
-                  <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
-                    Follow
-                  </button>
-                  <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
-                    Message
-                  </button>
-                </div>)}
-                
+                {pickBookUserName === userName ? (
+                  <div className="flex">
+                    <button
+                      onClick={() => nav("/edit-profile")}
+                      className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]"
+                    >
+                      Edit Profile
+                    </button>
+                    <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
+                      Share Profile
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex">
+                    {userDetails && userDetails.followers.includes(userId) ? (
+                      <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                        Unfollow
+                      </button>
+                    ) : (
+                      <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                        Follow
+                      </button>
+                    )}
+
+                    <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
+                      Message
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -182,26 +269,33 @@ const UserProfile = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-[10%] ">
-                {post.map((post) => {
-                  return (
-                    <div
-                      onClick={() => nav("/post")}
-                      className="relative group cursor-pointer"
-                    >
-                      <img
-                        className="w-full h-full max-[425px]:rounded-[7px] aspect-square object-cover rounded-[20px] shadow-md transition duration-300 group-hover:brightness-50"
-                        src={post.image}
-                        alt=""
-                      />
-                      <div className="hidden group-hover:flex justify-center items-center absolute top-0 bottom-0 left-0 right-0 text-white font-QSemi text-[20px]">
-                        <FontAwesomeIcon icon={faHeart} />
-                        <h3 className="mr-[2%]">50</h3>
-                        <FontAwesomeIcon className="ml-[2%]" icon={faMessage} />
-                        <h3>8</h3>
+                {post &&
+                  post.map((post) => {
+                    const filter = allComment.filter(
+                      (name) => name.post === post._id
+                    );
+                    return (
+                      <div
+                        onClick={() => nav(`/post/${post._id}`)}
+                        className="relative group cursor-pointer"
+                      >
+                        <img
+                          className="w-full h-full max-[425px]:rounded-[7px] aspect-square object-cover rounded-[20px] shadow-md transition duration-300 group-hover:brightness-50"
+                          src={post.image}
+                          alt=""
+                        />
+                        <div className="hidden group-hover:flex justify-center items-center absolute top-0 bottom-0 left-0 right-0 text-white font-QSemi text-[20px]">
+                          <FontAwesomeIcon icon={faHeart} />
+                          <h3 className="mr-[2%]">{post.like.length}</h3>
+                          <FontAwesomeIcon
+                            className="ml-[2%]"
+                            icon={faMessage}
+                          />
+                          <h3>{filter.length}</h3>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             </div>
           </div>

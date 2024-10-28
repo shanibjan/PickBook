@@ -86,9 +86,9 @@ code {
 
 .dropdown-menu {
   background-color: #fff;
-  padding: 12px 50px;
+  padding: 12px 30px;
   position: absolute;
-  left: -81px;
+  left: -170px;
   opacity: 0;
   top: 20px;
   visibility: hidden;

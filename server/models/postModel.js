@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const postSchema = new mongoose.Schema({
   image:{
     type:String,
@@ -17,8 +18,10 @@ const postSchema = new mongoose.Schema({
     require:true,
    
   },
+  like: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }],
   
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+  profile: { type: mongoose.Schema.Types.ObjectId, ref: 'profile', required: true },
   userName:{
     type:String,
     require:true,

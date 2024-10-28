@@ -10,8 +10,9 @@ const Editprofile = () => {
   
 
   const [image, setImage] = useState();
-  const [profiledata, setProfileData] = useState([]);
+  const [profiledata, setProfileData] = useState();
   const[bio,setBio]=useState()
+  console.log(profiledata);
   
 
   const store = (e) => {
@@ -29,7 +30,7 @@ const Editprofile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`api/v1/user/get-profile/${userId}`);
+      const res = await axios.get(`api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
         setProfileData(res.data);
       } else {
@@ -46,7 +47,7 @@ const Editprofile = () => {
 
   const changeProfile = async () => {
     try {
-      const res = await axios.put(`api/v1/user/edit-profile/${profiledata[0]._id}`,{image:image||profiledata[0].image,bio:bio||profiledata[0].bio});
+      const res = await axios.put(`api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
       console.log(res.data);
       window.alert(res.data.message)
       
@@ -105,7 +106,7 @@ const Editprofile = () => {
             ></textarea>
 
             <br />
-            {profiledata.length>0?( <button
+            {profiledata?( <button
               onClick={changeProfile}
               className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] tracking-[2px] my-[7%]  text-white"
             >

@@ -18,7 +18,7 @@ function App() {
       <Route exact path="/" element={<Home/>} />
       <Route  path="/user/:pickBookUserName" element={<UserProfile/>} />
       <Route  path="/profile" element={<Profile/>} />
-      <Route  path="/post" element={<PostDetails/>} />
+      <Route  path="/post/:postId" element={<PostDetails/>} />
       <Route  path="/message" element={<Message/>} />
       <Route  path="/edit-profile" element={<Editprofile/>} />
      </Routes>
