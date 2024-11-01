@@ -15,7 +15,7 @@ const Comments = ({ onDataSend, postId }) => {
   const [profiledata, setProfileData] = useState();
   const [comm, setComm] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
-  console.log(showPicker);
+  console.log(comm);
   
  
   const onEmojiClick = (emojiData) => {
@@ -64,7 +64,7 @@ const Comments = ({ onDataSend, postId }) => {
         "http://localhost:7000/api/v1/user/add-comment",
         {
           postId,
-          profile: profiledata._id,
+          profile: profiledata.profile._id,
           comment: commentFromUser,
           userName,
         }
@@ -93,7 +93,7 @@ const Comments = ({ onDataSend, postId }) => {
 
   return (
     <div  className="dd fixed bottom-0 left-0 right-0 z-10 h-screen bg-[#FAFAFA] mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
-      <div className="flex justify-between fixed w-[84%] text-[25px] mx-[3%] mb-[3%] z-[1] bg-[#FAFAFA] p-[3%] max-[550px]:text-[20px] ">
+      <div className="flex justify-between fixed w-[84%] max-[425px]:w-[90%] text-[25px] mx-[3%] mb-[3%] z-[1] bg-[#FAFAFA] p-[3%] max-[550px]:text-[20px] ">
         <h1 className="w-full font-QSemi">Comments</h1>
         <FontAwesomeIcon
           onClick={() => setHide(false)}
@@ -151,7 +151,7 @@ const Comments = ({ onDataSend, postId }) => {
           {profiledata ? (
             <img
               className="h-[50px] max-[425px]:h-[40px] aspect-square object-cover rounded-[50%]"
-              src={profiledata.image}
+              src={profiledata.profile.image}
               alt=""
             />
           ) : (

@@ -4,6 +4,10 @@ import profileModel from "../models/profileModel.js";
 import postModel from "../models/postModel.js";
 import commentModel from "../models/commentModel.js";
 import userModel from "../models/userModel.js";
+import notificationModel from "../models/notificationModel.js";
+import chatModel from "../models/chatModel.js";
+import chattersModel from "../models/chattersModel.js";
+import mongoose from "mongoose";
 
 dotenv.config();
 const router = express.Router();
@@ -263,6 +267,178 @@ router.post('/unfollow',async(req,res)=>{
     res.status(201).send({ following,follower });
   } catch (error) {
     
+  }
+})
+
+router.get('/all-users',async(req,res)=>{
+  try {
+    const users= await userModel.find()
+    const name=await users.map((m)=>{
+      return m.name
+    })
+    res.status(201).send(name);
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
+
+router.post('/noti-like',async(req,res)=>{
+  try {
+    const{postUser,likedUser,post,likedUserProfileId}=req.body
+
+    const like={postUser,likedUser,post,likedUserProfileId}
+
+    let notification = await notificationModel.findOne({postUser});
+   
+
+    if (!notification) {
+      notification = new notificationModel({postUser });
+     
+    }
+    notification.like.push(like)
+
+    await notification.save()
+    res.status(201).send(notification.like);
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
+
+router.post('/noti-follow',async(req,res)=>{
+  try {
+    const{follower,following,followerProfileId}=req.body
+
+    const follow={follower,following,followerProfileId}
+    console.log(follow);
+    
+    
+
+    let notification = await notificationModel.findOne({postUser:following})
+    
+    if (!notification) {
+      notification = new notificationModel({postUser:following })
+     
+    }
+    notification.follow.push(follow)
+
+    await notification.save()
+    res.status(201).send(notification.follow);
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
+
+router.get('/get-notification/:id',async(req,res)=>{
+  try {
+    const postUser=req.params.id
+    const notification = await notificationModel.findOne({postUser}).populate('follow.followerProfileId','image')
+    .populate('like.likedUserProfileId','image')
+    res.status(201).send(notification);
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.post('/noti-dislike',async(req,res)=>{
+  try {
+    const{postUser,post,likedUser}=req.body
+    const notification= await notificationModel.findOne({postUser})
+    notification.like = notification.like.filter((like) => {
+      return !(like.post === post && like.likedUser === likedUser);
+    });
+    
+    await notification.save()
+    res.status(201).send(notification.like);
+
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.post('/noti-unfollow',async(req,res)=>{
+  try {
+    const{postUser,unfollower}=req.body
+    const notification= await notificationModel.findOne({postUser})
+    notification.follow=notification.follow.filter((follow)=>follow.follower!==unfollower)
+    await notification.save()
+    res.status(201).send(notification.follow);
+
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+router.get('/get-messages/:sender/:receiver', async (req, res) => {
+  const { sender, receiver } = req.params;
+  
+  try {
+    const messages = await chatModel.find({
+      $or: [
+        { sender, receiver },
+        { sender: receiver, receiver: sender }
+      ]
+    }).sort({ createdAt: 1 }); // Sort by date to get messages in order
+
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Failed to fetch messages." });
+  }
+});
+
+router.get('/get-profile-for-chat/:id',async(req,res)=>{
+  try {
+    const userId=req.params.id
+    const profile=await profileModel.findOne({user:userId})
+    if (!mongoose.Types.ObjectId.isValid(profile)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+    
+   
+    res.status(200).json(
+      profile,
+    );
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
+
+router.post('/add-chatters',async(req,res)=>{
+  try {
+    const{senderId,receiverId}=req.body
+    console.log(req.body);
+    
+
+    let senderBar=await chattersModel.findOne({sender:senderId})
+    if(!senderBar){
+      senderBar = new chattersModel({sender:senderId})
+    }
+    if(!senderBar.receivers.includes(receiverId)){
+      senderBar.receivers.push(receiverId)
+    }
+    await senderBar.save()
+    res.status(201).send(senderBar);
+
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
+router.get('/get-chatters/:id',async(req,res)=>{
+  try {
+    const senderId=req.params.id
+
+    const chatters= await chattersModel.findOne({sender:senderId}).populate('receivers','userName image user')
+    if(!chatters){
+      return res.status(400).send({ message: "No messages yet" });
+    }
+    res.status(201).send(chatters.receivers);
+  } catch (error) {
+    console.log(error);
   }
 })
 

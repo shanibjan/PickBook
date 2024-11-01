@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import Posts from "../components/Posts";
-import Comments from "../components/Comments";
+
 import Footer from "../components/Footer";
-import Login from "./Login";
+
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {

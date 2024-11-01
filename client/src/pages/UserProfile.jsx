@@ -18,6 +18,7 @@ const UserProfile = () => {
   const { pickBookUserName } = useParams();
 
   const [profiledata, setProfileData] = useState();
+  const [selfProfiledata, setSelfProfileData] = useState();
   const [userDetails, setUserDetails] = useState();
   const [post, setPost] = useState([]);
   const [allComment, setAllComment] = useState([]);
@@ -26,9 +27,12 @@ const[followers,setFollowers]=useState([])
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
+console.log(profiledata);
 
-  console.log(followers);
 
+
+ 
+post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const fetchComment = async () => {
     try {
       const res = await axios.get(
@@ -57,6 +61,19 @@ const[followers,setFollowers]=useState([])
     } catch (error) {}
   };
 
+  const fetchSelfProfile = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+      );
+      if (res) {
+        setSelfProfileData(res.data.profile);
+      } else {
+        setSelfProfileData();
+      }
+    } catch (error) {}
+  };
+
   const fetchPost = async () => {
     try {
       const res = await axios.get(
@@ -74,7 +91,11 @@ const[followers,setFollowers]=useState([])
     try {
       const res=await axios.post('http://localhost:7000/api/v1/user/follow',{followerId:userId,followingId:userDetails._id})
       fetchProfile()
-      console.log(res.data);
+      
+      const response=await axios.post('http://localhost:7000/api/v1/user/noti-follow',{followerProfileId:selfProfiledata._id,follower:userName,following:userDetails._id})
+      console.log(response.data);
+      
+
       
     } catch (error) {
       console.log(error);
@@ -86,7 +107,10 @@ const[followers,setFollowers]=useState([])
     try {
       const res=await axios.post('http://localhost:7000/api/v1/user/unfollow',{followerId:userId,followingId:userDetails._id})
       fetchProfile()
-      console.log(res.data);
+     
+
+      const response=await axios.post('http://localhost:7000/api/v1/user/noti-unfollow',{unfollower:userName,postUser:userDetails._id})
+      console.log(response.data);
       
     } catch (error) {
       console.log(error);
@@ -98,6 +122,7 @@ const[followers,setFollowers]=useState([])
     fetchPost();
     fetchProfile();
     fetchComment();
+    fetchSelfProfile()
   }, []);
 
   useEffect(() => {
@@ -131,7 +156,7 @@ const[followers,setFollowers]=useState([])
                 <div className="w-[70%] max-[1000px]:w-[90%] max-[850px]:w-full max-[425px]:w-[80%]">
                   <div className="flex justify-between items-center">
                     <h1 className="font-QBold text-[22px] max-[425px]:text-[15px]">
-                      {pickBookUserName}
+                      {userDetails && userDetails.name}
                     </h1>
                     {pickBookUserName === userName ? (
                       <div className=" flex justify-between w-[60%] max-[750px]:hidden">
@@ -156,7 +181,7 @@ const[followers,setFollowers]=useState([])
                         Follow
                       </button>
                     )}
-                        <button className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
+                        <button onClick={()=>nav(`/message/${profiledata.user}`)} className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
                           Message
                         </button>
                       </div>
@@ -221,15 +246,23 @@ const[followers,setFollowers]=useState([])
                 </div>
               </div>
               <div className=" hidden max-[540px]:text-[12px] max-[750px]:block">
-                <div className="font-QSemi text-start">
-                  <h2>{profiledata ? profiledata.bio : null}</h2>
-                </div>
-                <div className="flex font-QMedium  my-[3%]">
-                  <p className="text-gray-500 mr-[1%]">Followed by </p>
-                  <p className="font-QSemi">abrham_m ,</p>
-                  <p className="font-QSemi max-[360px]:hidden">kennedy_jon</p>
-                  <p className="text-gray-500 ml-[1%]">and 55 more</p>
-                </div>
+              <div className="font-QSemi text-start">
+                      <h2>{profiledata ? profiledata.bio : null}</h2>
+                    </div>
+                    {followers.length>0 &&<div className="flex font-QMedium  my-[3%]">
+                      
+                      <p className="text-gray-500 mr-[1%]">Followed by </p>
+                      {followers.length>0 && followers.map((follower,index)=>{
+                        if(index<2)
+                        return(
+                          <p className="font-QSemi">{follower.name} ,</p>
+                        )
+                      })}
+                     
+                    {followers.length>2&&
+                     <p className="text-gray-500 ml-[1%]">and {followers.length-2} more</p>}
+                     
+                    </div>}
                 {pickBookUserName === userName ? (
                   <div className="flex">
                     <button
@@ -254,7 +287,7 @@ const[followers,setFollowers]=useState([])
                       </button>
                     )}
 
-                    <button className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
+                    <button onClick={()=>nav(`/message/${profiledata.user}`)} className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
                       Message
                     </button>
                   </div>

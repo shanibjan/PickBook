@@ -46,12 +46,16 @@ const Editprofile = () => {
   }, []);
 
   const changeProfile = async () => {
+    console.log(image);
+    
     try {
-      const res = await axios.put(`api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
+      const res = await axios.put(`api/v1/user/edit-profile/${profiledata.profile._id}`,{image:image||profiledata.profile.image,bio:bio||profiledata.profile.bio});
       console.log(res.data);
       window.alert(res.data.message)
       
     } catch (error) {
+      console.log(error);
+      
        window.alert(error.response.data.message);
     }
   };

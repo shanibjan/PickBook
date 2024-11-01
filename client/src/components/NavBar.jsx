@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../images/—Pngtree—the letter p on a_15885322.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,7 +6,7 @@ import {
   faMessage,
   faSquarePlus,
 } from "@fortawesome/free-regular-svg-icons";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faSearch } from "@fortawesome/free-solid-svg-icons";
 import userimg from "../images/user.png";
 import Comments from "./Comments";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,17 +17,27 @@ const NavBar = () => {
   const nav =useNavigate()
   const [isCommentVisible, setIsCommentVisible] = useState(false);
   const [profiledata, setProfileData] = useState();
-  
-  
+  const [relatedKeywordsData,setrelatedKeywordsData]=useState([])
+  const searchitems = useRef();
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
-
-  
+ 
+ 
   const userName = user ? user.name : null;
+  const userId = user ? user._id : null;
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
   };
-
+const fetchUserNames=async()=>{
+  try {
+    const res= await axios.get('http://localhost:7000/api/v1/user/all-users')
+   
+    setrelatedKeywordsData(res.data)
+    
+  } catch (error) {
+    
+  }
+}
   const fetchProfile = async () => {
     try {
       const res = await axios.get( `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`);
@@ -41,8 +51,10 @@ const NavBar = () => {
     }
   };
 
+
   useEffect(() => {
     fetchProfile();
+    fetchUserNames()
   }, []);
   
 
@@ -54,9 +66,53 @@ const NavBar = () => {
     }
   }, [isCommentVisible]);
 
+
+  function displayRelatedKeywords(keywords) {
+    
+    const relatedKeywordsContainer = document.getElementById("relatedKeywords");
+   
+    
+
+    relatedKeywordsContainer.innerHTML = "";
+    keywords.forEach((keyword) => {
+      // const searchLens=document.querySelector('.search-lens')
+      // console.log(searchLens);
+      relatedKeywordsContainer.style.display="block"
+      const keywordElement = document.createElement("div");
+      keywordElement.style.margin = "30px";
+      keywordElement.addEventListener("click", () => {
+        const searchInput = document.getElementById("searchInput");
+        searchInput.value = keyword;
+        relatedKeywordsContainer.style.display = "none";
+      });
+      keywordElement.textContent = keyword;
+      relatedKeywordsContainer.appendChild(keywordElement);
+    });
+  }
+  function handleSearchInput(event) {
+    const searchQuery = event.target.value.toLowerCase();
+    const matchedKeywords = relatedKeywordsData.filter((keyword) =>
+      keyword.toLowerCase().includes(searchQuery)
+    );
+    displayRelatedKeywords(matchedKeywords);
+  }
+
+  const searchInput = document.getElementById("searchInput");
+  const relatedKeywordsContainer = document.getElementById("relatedKeywords");
+  if (searchInput != null) {
+    searchInput.addEventListener("input", handleSearchInput, () => {
+      relatedKeywordsContainer.style.display = "block";
+    });
+  }
+const clickSearch=()=>{
+  nav(`/user/${searchitems.current.value}`)
+  searchitems.current.value=""
+}
+  
+
   return (
     <div>
-      <div className="flex justify-between text-gray-700 items-center px-[5%] fixed w-full z-10 bg-white top-0">
+      <div className="flex justify-between text-gray-700 items-center px-[5%] fixed w-full z-[100] bg-white top-0">
         <div onClick={()=>nav('/')} className="flex cursor-pointer justify-start items-center w-[20%] max-[1310px]:w-[25%] max-[1050px]:w-[32%] max-[800px]:w-[45%] max-[600px]:w-[25%]">
           <div className="h-[80px] w-[80px] max-[425px]:w-[70px] max-[425px]:h-[70px] ">
             <img className="h-full w-full" src={logo} alt="" />
@@ -67,26 +123,24 @@ const NavBar = () => {
             </h1>
           </div>
         </div>
-        <div className="flex justify-between w-[50%] max-[600px]:h-[45px] items-center max-[1050px]:w-[40%] max-[800px]:w-[55%] max-[600px]:w-[75%] bg-gray-100 py-[1%] px-[2%] rounded-[20px]">
-          <div className="w-[70%]">
-            <input
-              className="bg-gray-100 w-full max-[425px]:text-[14px] font-QRegular outline-none"
-              placeholder="Search User"
-              type="text"
-            />
-          </div>
-          <div className="h-[18px] text-gray-400">
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              className="w-full h-full"
-            />
-          </div>
+        <div className="placeSearch bg-gray-100 w-[50%] max-[800px]:w-[70%] rounded-[10px]">
+        <input
+        className="bg-gray-100 font-QLight"
+          ref={searchitems}
+          type="text"
+          id="searchInput"
+          placeholder="Search..."
+        />
+        <div id="relatedKeywords" className="bg-gray-100 text-gray-500 font-QSemi rounded-bl-[10px] rounded-br-[10px]"></div>
+        <div onClick={clickSearch} className="search-lense">
+          <FontAwesomeIcon icon={faSearch} />
         </div>
+      </div>
         <div className="flex justify-between items-center cursor-pointer w-[20%] max-[800px]:hidden">
           <div className="h-[25px]">
             <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
           </div>
-          <div onClick={()=>nav('/message')} className="h-[25px]">
+          <div onClick={()=>nav(`/message/${userId}`)} className="h-[25px]">
             <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
           </div>
           <div className="h-[25px]" onClick={() => setIsCommentVisible(true)}>
@@ -109,7 +163,7 @@ const NavBar = () => {
                 exit={{ x: 1500 }}
                 transition={{ duration: 0.5 }}
               >
-                <Notification onDataSend={handleDataFromChild} />
+                <Notification onDataSend={handleDataFromChild}  />
               </motion.div>
             </div>
           </div>

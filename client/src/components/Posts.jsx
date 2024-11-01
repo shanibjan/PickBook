@@ -22,6 +22,7 @@ import imageCompression from "browser-image-compression";
 import { useNavigate } from "react-router-dom";
 const Posts = () => {
   const nav = useNavigate();
+  const [userDetails, setUserDetails] = useState();
   const [isCommentVisible, setIsCommentVisible] = useState(false);
   const [description, setDescription] = useState();
   const [post, setPost] = useState([]);
@@ -29,13 +30,34 @@ const Posts = () => {
   const [profiledata, setProfileData] = useState();
   const [postIdForComment, setPostIdForComment] = useState();
   const [allComment, setAllComment] = useState([]);
- console.log(post);
+ 
+ const filteredPosts=post.filter((p)=>{
+  return(userDetails && (userDetails.following.includes(p.user._id) || userDetails._id===p.user._id) )
+ })
+ console.log(filteredPosts);
+ 
  
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
 
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
+
+
+  const fetchUserDetails = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+      );
+      if (res) {
+       
+        setUserDetails(res.data.userDetails);
+       
+      } else {
+        setUserDetails();
+      }
+    } catch (error) {}
+  };
 
   const fetchPost = async () => {
     try {
@@ -48,7 +70,8 @@ const Posts = () => {
     } catch (error) {}
   };
 
-  post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
 
   const store = async (e) => {
     let val = e.target.files[0];
@@ -140,26 +163,36 @@ const Posts = () => {
     }
   };
 
-  const likePost = async (postId) => {
+  const likePost = async (post) => {
+    console.log(post.user._id);
+    
     try {
       await axios.post("http://localhost:7000/api/v1/user/like-post", {
-        postId,
+        postId:post._id,
         userId,
       });
 
       fetchPost();
+      const res= await axios.post('http://localhost:7000/api/v1/user/noti-like',{postUser:post.user._id,likedUser:userName,likedUserProfileId:profiledata._id,post:post.image})
+      console.log(res.data);
+      
     } catch (error) {
       console.log(error);
     }
   };
-  const dislikePost = async (postId) => {
+  const dislikePost = async (post) => {
     try {
       await axios.post("http://localhost:7000/api/v1/user/dislike-post", {
-        postId,
+        postId:post._id,
         userId,
       });
 
       fetchPost();
+
+      const res= await axios.post('http://localhost:7000/api/v1/user/noti-dislike',{postUser:post.user._id,post:post.image,likedUser:userName})
+      console.log(res.data);
+
+     
     } catch (error) {
       console.log(error);
     }
@@ -167,6 +200,7 @@ const Posts = () => {
   useEffect(() => {
     fetchPost();
     fetchComment()
+    fetchUserDetails()
   }, []);
   useEffect(() => {
    
@@ -239,15 +273,15 @@ const Posts = () => {
           </div>
         </div>
 
-        <div className="mt-[6%] max-[425px]:mt-[13%] max-[800px]:mb-[400px] max-[600px]:mb-[300px] max-[425px]:mb-[230px]   grid grid-cols-2 gap-[2%] max-[800px]:grid-cols-1">
-          {post &&
-            post.map((item) => {
-              console.log(item);
-              console.log(allComment);
+        <div className="mt-[6%] max-[425px]:mt-[13%] max-[800px]:mb-[400px] max-[600px]:mb-[300px] max-[425px]:mb-[230px]   grid grid-cols-2 gap-[1%] max-[800px]:grid-cols-1">
+          {filteredPosts &&
+            filteredPosts.map((item) => {
+           
+            
               
               
               const filter=allComment.filter((name)=>name.post===item._id)
-              console.log(filter);
+             
               
 
               return (
@@ -325,13 +359,13 @@ const Posts = () => {
                       <div className="flex w-[25%] justify-between cursor-pointer max-[1000px]:w-[35%]">
                         {item.like.includes(userId) ? (
                           <FontAwesomeIcon
-                            onClick={() => dislikePost(item._id)}
+                            onClick={() => dislikePost(item)}
                             className="text-red-600"
                             icon={faHeartSolid}
                           />
                         ) : (
                           <FontAwesomeIcon
-                            onClick={() => likePost(item._id)}
+                            onClick={() => likePost(item)}
                             icon={faHeart}
                           />
                         )}

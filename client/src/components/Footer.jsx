@@ -2,7 +2,9 @@ import {
   faBell,
   faMessage,
   faSquarePlus,
+  
 } from "@fortawesome/free-regular-svg-icons";
+import logo from "../images/—Pngtree—the letter p on a_15885322.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import userimg from "../images/user.png";
@@ -21,6 +23,8 @@ const Footer = () => {
   const userName = user ? user.name : null;
 
   const [isCommentVisible, setIsCommentVisible] = useState(false);
+ 
+  
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
   };
@@ -29,7 +33,7 @@ const Footer = () => {
     try {
       const res = await axios.get(`http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
-        setProfileData(res.data);
+        setProfileData(res.data.profile);
       } else {
         setProfileData([]);
       }
@@ -50,12 +54,17 @@ const Footer = () => {
 
   return (
     <div>
-      <div className=" fixed bottom-0 w-full bg-white px-[5%] py-[2%] hidden max-[800px]:flex justify-between ">
+      <div className=" fixed bottom-0 w-full bg-white px-[5%] py-[2%] items-center hidden max-[800px]:flex justify-between ">
+      <div className="h-[35px] max-[500px]:h-[30px]">
+        <img src={logo} alt="" className="w-full h-full" />
+          
+        </div>
+        
         <div className="h-[25px] max-[500px]:h-[20px]">
           <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
         </div>
         <div
-          onClick={() => nav("/message")}
+          onClick={() => nav(`/message/${userId}`)}
           className="h-[25px] max-[500px]:h-[20px] "
         >
           <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
@@ -71,10 +80,10 @@ const Footer = () => {
           onClick={()=>nav(`/user/${userName}`)}
           className="h-[25px] max-[500px]:h-[20px] "
         >
-          {profiledata.length > 0 ? (
+          {profiledata? (
             <img
               className="h-full aspect-square rounded-[50%]"
-              src={profiledata[0].image}
+              src={profiledata.image}
               alt=""
             />
           ) : (
