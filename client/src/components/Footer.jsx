@@ -55,7 +55,7 @@ const Footer = () => {
   return (
     <div>
       <div className=" fixed bottom-0 w-full bg-white px-[5%] py-[2%] items-center hidden max-[800px]:flex justify-between ">
-      <div className="h-[35px] max-[500px]:h-[30px]">
+      <div onClick={()=>nav('/')} className="h-[35px] max-[500px]:h-[30px]">
         <img src={logo} alt="" className="w-full h-full" />
           
         </div>

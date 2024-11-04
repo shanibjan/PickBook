@@ -28,12 +28,14 @@ const ChatBox = ({ onDataSend, receiverId }) => {
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
+  const userName = user ? user.name : null;
   const [profileDp, setProfileDp] = useState();
- 
+ const[senderprofile,setSenderprofile]=useState()
 
   const [messages, setMessages] = useState([]);
 
   const [newMessage, setNewMessage] = useState("");
+ console.log(senderprofile);
  
 
   const fetchUserProfile = async () => {
@@ -46,6 +48,20 @@ const ChatBox = ({ onDataSend, receiverId }) => {
         
       } else {
         setProfileDp();
+      }
+    } catch (error) {}
+  };
+
+  const fetchSenderProfile = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+      );
+      if (res) {
+        setSenderprofile(res.data.profile._id);
+        
+      } else {
+        setSenderprofile();
       }
     } catch (error) {}
   };
@@ -74,7 +90,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
 
   
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const messageData = {
       sender: userId,
       receiver: receiverId,
@@ -86,6 +102,10 @@ const ChatBox = ({ onDataSend, receiverId }) => {
     socket.emit("sendMessage", messageData);
 
     setNewMessage("");
+
+    const res= await axios.post('http://localhost:7000/api/v1/user/add-chatters',{senderId:userId,receiverId:profileDp._id,receiverUserId:receiverId,senderProfileId:senderprofile})
+    console.log(res.data);
+    
   };
 
   const fetchMessage = async () => {
@@ -104,7 +124,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
   useEffect(() => {
     fetchMessage();
     fetchUserProfile();
-   
+    fetchSenderProfile()
   }, []);
 
   useEffect(() => {

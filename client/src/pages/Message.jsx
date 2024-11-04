@@ -31,7 +31,7 @@ const Message = () => {
   const [profileDp, setProfileDp] = useState();
   const [messageBoxes, setMessageBoxes] = useState([]);
   const nav = useNavigate();
-console.log(profileDp);
+
 
   const [messages, setMessages] = useState([]);
 
@@ -39,7 +39,8 @@ console.log(profileDp);
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
-
+  let orderedMessageBox =messageBoxes.slice().reverse();
+  
   const fetchUserProfile = async () => {
     try {
       const res = await axios.get(
@@ -142,9 +143,9 @@ console.log(isCommentVisible);
     }
   }, [isCommentVisible]);
 
-  // useEffect(()=>{
-  //   fetchMessage();
-  // },[messages])
+  useEffect(()=>{
+    fetchMessageBox();
+  },[isCommentVisible])
 
   return (
     <div className="absolute  w-full h-screen">
@@ -178,8 +179,8 @@ console.log(isCommentVisible);
             </div>
 
             <div>
-              {messageBoxes &&
-                messageBoxes.map((message) => {
+              {orderedMessageBox &&
+                orderedMessageBox.map((message) => {
                   return (
                     <div
                       onClick={() =>
@@ -232,8 +233,8 @@ console.log(isCommentVisible);
             </div>
 
             <div>
-              {messageBoxes &&
-                messageBoxes.map((message,index) => {
+              {orderedMessageBox &&
+                orderedMessageBox.map((message,index) => {
                   return (
                     <div
                       onClick={() => {

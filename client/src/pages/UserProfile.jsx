@@ -27,7 +27,7 @@ const[followers,setFollowers]=useState([])
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
-console.log(profiledata);
+console.log(userId);
 
 
 
@@ -278,11 +278,11 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 ) : (
                   <div className="flex">
                     {userDetails && userDetails.followers.includes(userId) ? (
-                      <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                      <button onClick={unfollow} className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
                         Unfollow
                       </button>
                     ) : (
-                      <button className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                      <button onClick={follow} className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
                         Follow
                       </button>
                     )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import user1 from "../images/user.png";
-
+// max-[800px]:mb-[400px] max-[600px]:mb-[300px] max-[425px]:mb-[230px]
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImage,
@@ -34,7 +34,7 @@ const Posts = () => {
  const filteredPosts=post.filter((p)=>{
   return(userDetails && (userDetails.following.includes(p.user._id) || userDetails._id===p.user._id) )
  })
- console.log(filteredPosts);
+ 
  
  
 
@@ -132,7 +132,7 @@ const Posts = () => {
 
   useEffect(() => {
     handleDataFromChild();
-
+   
     fetchProfile();
   }, []);
 
@@ -164,17 +164,22 @@ const Posts = () => {
   };
 
   const likePost = async (post) => {
-    console.log(post.user._id);
+   
+    
     
     try {
+      
       await axios.post("http://localhost:7000/api/v1/user/like-post", {
         postId:post._id,
         userId,
       });
 
       fetchPost();
-      const res= await axios.post('http://localhost:7000/api/v1/user/noti-like',{postUser:post.user._id,likedUser:userName,likedUserProfileId:profiledata._id,post:post.image})
+      if(post.user._id !== userId){
+        const res= await axios.post('http://localhost:7000/api/v1/user/noti-like',{postUser:post.user._id,likedUser:userName,likedUserProfileId:profiledata._id,post:post.image})
       console.log(res.data);
+      }
+      
       
     } catch (error) {
       console.log(error);
@@ -197,6 +202,20 @@ const Posts = () => {
       console.log(error);
     }
   };
+
+  const removePost=async(postId)=>{
+    try {
+      console.log(postId);
+      
+      const res=await axios.delete(`http://localhost:7000/api/v1/user/remove-post/${postId}`)
+      fetchPost()
+      console.log(res.data);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   useEffect(() => {
     fetchPost();
     fetchComment()
@@ -273,9 +292,9 @@ const Posts = () => {
           </div>
         </div>
 
-        <div className="mt-[6%] max-[425px]:mt-[13%] max-[800px]:mb-[400px] max-[600px]:mb-[300px] max-[425px]:mb-[230px]   grid grid-cols-2 gap-[1%] max-[800px]:grid-cols-1">
+        <div className="mt-[6%] max-[425px]:mt-[13%] overflow-y-auto grid grid-cols-2 gap-[1%] max-[800px]:grid-cols-1">
           {filteredPosts &&
-            filteredPosts.map((item) => {
+            filteredPosts.map((item,index) => {
            
             
               
@@ -285,7 +304,9 @@ const Posts = () => {
               
 
               return (
-                <div className="bg-white shadow-lg   p-[3%] rounded-[10px]">
+                <div className={`bg-white shadow-lg   p-[3%] rounded-[10px] ${
+                  index === filteredPosts.length - 1 ? "mb-[50px]" : "mb-0"
+                }`}>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center w-[70%]">
                       {item.profile ? (
@@ -318,14 +339,13 @@ const Posts = () => {
                       <FontAwesomeIcon icon={faEllipsis} />
                       {item.user._id === userId ? (
                         <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
-                          <li className="border-b-[1px]" >Remove post</li>
-                          <li>Go to profile</li>
+                          <li onClick={()=>removePost(item._id)} className="border-b-[1px]" >Remove post</li>
+                          <li  onClick={() => nav(`/user/${item.userName}`)} >Go to profile</li>
                         </ul>
                       ) : (
                         <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
-                          <li className="border-b-[1px]" >Go to post</li>
-                          <li className="border-b-[1px]" >Follow</li>
-                          <li>Go to profile</li>
+                          
+                          <li  onClick={() => nav(`/user/${item.userName}`)} >Go to profile</li>
                         </ul>
                       )}
                     </div>

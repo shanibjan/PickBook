@@ -22,7 +22,8 @@ const PostDetails = () => {
   const [post, setPost] = useState();
   const [posts, setPosts] = useState([]);
   const [comm, setComm] = useState([]);
-  console.log(comm);
+  const [profiledata, setProfileData] = useState();
+  console.log(profiledata);
  
  
 
@@ -33,6 +34,7 @@ const PostDetails = () => {
   const nav = useNavigate();
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
+  const userName = user ? user.name : null;
 
 
   const fetchComment = async () => {
@@ -58,6 +60,20 @@ const PostDetails = () => {
         setPost(res.data);
       } else {
         setPost();
+      }
+    } catch (error) {}
+  };
+
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+      );
+      if (res) {
+        setProfileData(res.data.profile);
+      } else {
+        setProfileData();
       }
     } catch (error) {}
   };
@@ -100,6 +116,7 @@ const PostDetails = () => {
     handleDataFromChild();
     fetchPost();
     fetchComment()
+    fetchProfile()
   }, []);
   useEffect(()=>{
     fetchPost();
@@ -127,6 +144,10 @@ const PostDetails = () => {
       await axios.post("http://localhost:7000/api/v1/user/like-post", { postId, userId });
 
       fetchPost();
+      if(post.user._id !== userId){
+        const res= await axios.post('http://localhost:7000/api/v1/user/noti-like',{postUser:post.user._id,likedUser:userName,likedUserProfileId:profiledata._id,post:post.image})
+      console.log(res.data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -139,6 +160,8 @@ const PostDetails = () => {
      
       
       fetchPost();
+      const res= await axios.post('http://localhost:7000/api/v1/user/noti-dislike',{postUser:post.user._id,post:post.image,likedUser:userName})
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -200,9 +223,9 @@ const PostDetails = () => {
                         </ul>
                       ) : (
                         <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] max-[1000px]:left-[-80px] max-[550px]:text-[11px] max-[500px]:left-[-110px] max-[1000px]:w-[150px] ">
-                          <li className="border-b-[1px]" >Go to post</li>
-                          <li className="border-b-[1px]" >Follow</li>
-                          <li>Go to profile</li>
+                          
+                         
+                          <li onClick={()=>nav(`/user/${post.userName}`)} >Go to profile</li>
                         </ul>
                       )}
                     </div>

@@ -197,14 +197,16 @@ router.get("/get-comment/:id", async (req, res) => {
     console.log(error);
   }
 });
-router.delete("/remove-post", async (req, res) => {
+router.delete("/remove-post/:id", async (req, res) => {
   try {
-    const { postId } = req.body;
+    const  postId  = req.params.id;
+    console.log(postId);
+    
 
     const post = await postModel.findByIdAndDelete({ _id: postId });
     res.status(201).send({
       success: true,
-      message: " comment added",
+      message: "Post removed",
       post,
     });
   } catch (error) {
@@ -286,8 +288,14 @@ router.get('/all-users',async(req,res)=>{
 router.post('/noti-like',async(req,res)=>{
   try {
     const{postUser,likedUser,post,likedUserProfileId}=req.body
+    console.log(postUser);
+    console.log(likedUser);
+    
+    
 
     const like={postUser,likedUser,post,likedUserProfileId}
+    
+    
 
     let notification = await notificationModel.findOne({postUser});
    
@@ -409,18 +417,27 @@ router.get('/get-profile-for-chat/:id',async(req,res)=>{
 
 router.post('/add-chatters',async(req,res)=>{
   try {
-    const{senderId,receiverId}=req.body
-    console.log(req.body);
+    const{senderId,receiverId,receiverUserId,senderProfileId}=req.body
+   
     
 
     let senderBar=await chattersModel.findOne({sender:senderId})
+    let receiverBar=await chattersModel.findOne({sender:receiverUserId})
     if(!senderBar){
       senderBar = new chattersModel({sender:senderId})
+    }
+    if(!receiverBar){
+      receiverBar = new chattersModel({sender:receiverUserId})
     }
     if(!senderBar.receivers.includes(receiverId)){
       senderBar.receivers.push(receiverId)
     }
+
+    if(!receiverBar.receivers.includes(senderProfileId)){
+      receiverBar.receivers.push(senderProfileId)
+    }
     await senderBar.save()
+    await receiverBar.save()
     res.status(201).send(senderBar);
 
   } catch (error) {
@@ -437,6 +454,8 @@ router.get('/get-chatters/:id',async(req,res)=>{
       return res.status(400).send({ message: "No messages yet" });
     }
     res.status(201).send(chatters.receivers);
+  
+    
   } catch (error) {
     console.log(error);
   }
