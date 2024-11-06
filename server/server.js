@@ -7,6 +7,8 @@ import userRoutes from './routes/userRoute.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import chatModel from "./models/chatModel.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
@@ -52,6 +54,13 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
+});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get('*', (req, res) => {
+    
+  res.sendFile(path.join(__dirname, '..', 'client','public', 'index.html'));
 });
 
 // Use `server.listen` instead of `app.listen`

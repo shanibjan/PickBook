@@ -11,6 +11,8 @@ const router = express.Router();
 const accountSid = process.env.TWILIO_ACCOUNT_SID; // Get these from your Twilio account
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
+console.log(authToken);
+
 
 router.post("/send-otp", async (req, res) => {
   try {
