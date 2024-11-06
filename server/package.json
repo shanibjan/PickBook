@@ -202,6 +202,7 @@
     "tree-kill": "^1.2.2",
     "tslib": "^2.7.0",
     "type-is": "^1.6.18",
+     "twilio": "^5.3.4",
     "undefsafe": "^2.0.5",
     "unpipe": "^1.0.0",
     "util-deprecate": "^1.0.2",
