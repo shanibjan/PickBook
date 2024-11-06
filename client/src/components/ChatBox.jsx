@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import basil from "../images/basil.jpg";
+
 import EmojiPicker from "emoji-picker-react";
 import {
   faFaceSmile,

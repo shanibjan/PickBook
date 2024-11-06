@@ -3,6 +3,9 @@ import logo from "../images/—Pngtree—the letter p on a_15885322.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import toastStyles from "../toastStyle";
 
 const Login = () => {
   const [phone, setPhone] = useState("+91");
@@ -40,30 +43,50 @@ const Login = () => {
       if (res.data.success) {
         localStorage.setItem("pickbook-token", res.data.token);
         localStorage.setItem("pickbook-user", JSON.stringify(res.data.user));
-        window.alert(res.data.message);
-        nav("/");
+        toast.success("Login Succesful!", {
+          ...toastStyles,
+          onClose: () => nav("/"),
+        });
+        
+      
       } else {
-        window.alert(res.data.message);
+     
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
+     
     }
   };
   const sendOtp=async()=>{
     try {
       if (valid === false) {
         const res = await axios.post("api/v1/auth/send-otp-forgot-password", { phone });
-        window.alert(res.data.message);
+      
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
         
         if (res.data.success) {
           
           setBar("verifyotp");
         }
       } else {
-        window.alert("Enter a valid Phone number ");
+      
+        toast.success("Enter a valid Phone number ", {
+          ...toastStyles,
+        });
+        
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+    
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   }
 
@@ -72,27 +95,39 @@ const Login = () => {
       const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
       console.log(res.data);
       if (res.data.success) {
-        window.alert(res.data.message);
+      
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
         setBar("changepassword");
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+      
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   };
 
   const changePassword=async()=>{
     try {
-      console.log("hi");
+     
       
       const res= await axios.put('api/v1/auth/change-password',{phone,password})
       console.log(res.data);
       if (res.data.success) {
-        window.alert(res.data.message);
+      
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
         setBar("login");
       }
       
     } catch (error) {
-      window.alert(error.response.data.message);
+    
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   }
   return (
@@ -252,6 +287,7 @@ const Login = () => {
           </h4>
         </div>
       </div>
+      <ToastContainer limit={1} />
     </div>
   );
 };

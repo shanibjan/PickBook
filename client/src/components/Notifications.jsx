@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import feed2 from "../images/IMG_8890.jpeg";
-import user2 from "../images/IMG_6351.jpeg";
+import loading from "../images/buffering-colors.gif";
+
 import axios from "axios";
 
 const Notification = ({ onDataSend }) => {
@@ -10,7 +10,9 @@ const Notification = ({ onDataSend }) => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const [noti, setNoti] = useState([]);
   const userId = user ? user._id : null;
-  console.log(noti);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  
   
   const fetchNoti = async () => {
     try {
@@ -19,6 +21,7 @@ const Notification = ({ onDataSend }) => {
       );
 
       setNoti([...res.data.like, ...res.data.follow]);
+      setIsLoading(false)
     } catch (error) {
       console.log(error);
     }
@@ -28,14 +31,7 @@ const Notification = ({ onDataSend }) => {
     onDataSend(hide);
   }, [hide]);
 
-  const notification = [
-    { follwer: "shanib", src: feed2, noti: "post" },
-    { follwer: "akhil", src: feed2, noti: "follow" },
-    { follwer: "sabu_08", src: feed2, noti: "post" },
-    { follwer: "shanib", src: feed2, noti: "follow" },
-    { follwer: "shanib", src: feed2, noti: "post" },
-    { follwer: "shanib", src: feed2, noti: "post" },
-  ];
+  
   useEffect(() => {
     fetchNoti();
   }, []);
@@ -50,10 +46,20 @@ const Notification = ({ onDataSend }) => {
           icon={faXmark}
         />
       </div>
+      {isLoading ? (
+        <div className="h-[400px] max-[450px]:h-[300px] absolute z-10 w-full top-[90px]">
+          <img
+            src={loading}
+            alt=""
+            className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+          />
+        </div>
+      ) : null}
+      {noti.length>0?
       <div className="absolute top-[85px] w-full">
-        {noti &&
-          noti.map((not) => {
-            console.log(not);
+        
+         { noti.map((not) => {
+          
             
             return not.post ? (
               <div className="flex items-center bg-white rounded-[20px] my-[3%] mx-[4%] p-[2%]">
@@ -96,7 +102,9 @@ const Notification = ({ onDataSend }) => {
               </div>
             );
           })}
-      </div>
+      </div>:isLoading===false?(<div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center" >
+        <h1>No notifications yet</h1>
+      </div>):null}
     </div>
   );
 };

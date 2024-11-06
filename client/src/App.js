@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Editprofile from "./pages/Editprofile";
 import Chat from "./pages/Chat";
+import Noti from "./pages/Noti";
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
       <Route  path="/message/:receiverId" element={<Message/>} />
       <Route  path="/edit-profile" element={<Editprofile/>} />
       <Route  path="/chat" element={<Chat/>} />
+      <Route  path="/noti" element={<Noti/>} />
      </Routes>
+    
     </div>
   );
 }

@@ -9,9 +9,7 @@ import {
   faMessage,
   faTableCells,
 } from "@fortawesome/free-solid-svg-icons";
-import feed from "../images/br.jpg";
-import feed2 from "../images/IMG_8890.jpeg";
-import feed3 from "../images/IMG_1515.jpeg";
+
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import axios from "axios";
@@ -50,7 +48,7 @@ const fetchProfile = async () => {
     } catch (error) {}
   };
   const nav = useNavigate();
-  const posts = [{ src: feed }, { src: feed2 }, { src: feed3 }];
+  
 
   useEffect(() => {
     fetchProfile();

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import basil from "../images/basil.jpg";
-import user2 from "../images/IMG_6351.jpeg";
+import React, { useEffect, useState } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -21,6 +20,7 @@ import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { io } from "socket.io-client";
 import axios from "axios";
+import loading from "../images/buffering-colors.gif";
 
 export const socket = io("http://localhost:7000", {
   transports: ["websocket", "polling"], // Enable both transports
@@ -28,10 +28,10 @@ export const socket = io("http://localhost:7000", {
 
 const Message = () => {
   const { receiverId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
   const [profileDp, setProfileDp] = useState();
   const [messageBoxes, setMessageBoxes] = useState([]);
   const nav = useNavigate();
-
 
   const [messages, setMessages] = useState([]);
 
@@ -39,17 +39,17 @@ const Message = () => {
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
-  let orderedMessageBox =messageBoxes.slice().reverse();
-  
+  let orderedMessageBox = messageBoxes.slice().reverse();
+
   const fetchUserProfile = async () => {
     try {
       const res = await axios.get(
         `http://localhost:7000/api/v1/user/get-profile-for-chat/${receiverId}`
       );
-      if (res && receiverId !==userId) {
-        setProfileDp(res.data)
-        setIsCommentVisible(true)
-      }else if(receiverId===userId) {
+      if (res && receiverId !== userId) {
+        setProfileDp(res.data);
+        setIsCommentVisible(true);
+      } else if (receiverId === userId) {
         setProfileDp();
       }
     } catch (error) {}
@@ -60,14 +60,14 @@ const Message = () => {
       const res = await axios.get(
         `http://localhost:7000/api/v1/user/get-chatters/${userId}`
       );
-      if (res) {
+      if (res.data) {
         setMessageBoxes(res.data);
+        setIsLoading(false)
       } else {
         setMessageBoxes([]);
       }
     } catch (error) {
       console.log(error);
-      
     }
   };
 
@@ -117,7 +117,6 @@ const Message = () => {
     setNewMessage((prevInput) => prevInput + emojiData.emoji); // Correct emoji property
   };
   const [isCommentVisible, setIsCommentVisible] = useState(false);
-console.log(isCommentVisible);
 
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
@@ -143,16 +142,15 @@ console.log(isCommentVisible);
     }
   }, [isCommentVisible]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchMessageBox();
-  },[isCommentVisible])
+  }, [isCommentVisible]);
 
   return (
     <div className="absolute  w-full h-screen">
-      <div className="max-[800px]:hidden" >
-      <NavBar />
+      <div className="max-[800px]:hidden">
+        <NavBar />
       </div>
-     
 
       {user ? (
         <div className="flex px-[2%] h-full  ">
@@ -177,10 +175,18 @@ console.log(isCommentVisible);
               <h2>Message</h2>
               <h2 className="text-[#8735C8]">See all</h2>
             </div>
-
-            <div>
-              {orderedMessageBox &&
-                orderedMessageBox.map((message) => {
+            {isLoading ? (
+              <div className="h-[400px] max-[450px]:h-[300px] ">
+                <img
+                  src={loading}
+                  alt=""
+                  className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+                />
+              </div>
+            ) : null}
+            {orderedMessageBox.length > 0 ? (
+              <div>
+                {orderedMessageBox.map((message) => {
                   return (
                     <div
                       onClick={() =>
@@ -207,7 +213,12 @@ console.log(isCommentVisible);
                     </div>
                   );
                 })}
-            </div>
+              </div>
+            ) : isLoading === false ? (
+              <div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center">
+                <h1>No messages yet</h1>
+              </div>
+            ) : null}
           </div>
 
           <div className="hidden max-[800px]:block w-[40%] max-[1220px]:w-[60%] max-[930px]:w-[80%] max-[800px]:w-full max-h-screen overflow-y-scroll py-[2%] ">
@@ -227,14 +238,25 @@ console.log(isCommentVisible);
               </div>
             </div>
 
+           
+
             <div className="flex justify-between p-[6%] font-QBold  border-b-[1px]">
               <h2>Message</h2>
               <h2 className="text-[#8735C8]">See all</h2>
             </div>
-
+            {isLoading ? (
+              <div className="h-[400px] max-[450px]:h-[300px] ">
+                <img
+                  src={loading}
+                  alt=""
+                  className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+                />
+              </div>
+            ) : null}
+            {orderedMessageBox.length>0 ?
             <div>
-              {orderedMessageBox &&
-                orderedMessageBox.map((message,index) => {
+              
+                {orderedMessageBox.map((message, index) => {
                   return (
                     <div
                       onClick={() => {
@@ -264,7 +286,9 @@ console.log(isCommentVisible);
                     </div>
                   );
                 })}
-            </div>
+            </div>:isLoading===false?(<div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center" >
+        <h1>No messages yet</h1>
+      </div>):null}
           </div>
 
           <div className="bg-white shadow-lg w-full h-screen overflow-y-scroll max-[800px]:hidden  ">
@@ -272,7 +296,7 @@ console.log(isCommentVisible);
               {profileDp && (
                 <div className="flex items-center font-QSemi">
                   <img
-                    className="h-[60px] w-[60px] object-cover rounded-[50%] mr-[20%]"
+                    className="h-[60px] aspect-square object-cover rounded-[50%] mr-[20%]"
                     src={profileDp.image}
                     alt=""
                   />

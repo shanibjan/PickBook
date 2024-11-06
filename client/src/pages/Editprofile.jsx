@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
-import logo from "../images/—Pngtree—the letter p on a_15885322.png";
+
 import axios from "axios";
+import NavBar from '../components/NavBar';
+import Footer from "../components/Footer";
+import toastStyles from "../toastStyle";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Editprofile = () => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
-
+const nav=useNavigate()
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
   
@@ -13,6 +19,7 @@ const Editprofile = () => {
   const [profiledata, setProfileData] = useState();
   const[bio,setBio]=useState()
   console.log(profiledata);
+  
   
 
   const store = (e) => {
@@ -32,7 +39,7 @@ const Editprofile = () => {
     try {
       const res = await axios.get(`api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
-        setProfileData(res.data);
+        setProfileData(res.data.profile);
       } else {
         setProfileData([]);
       }
@@ -46,17 +53,26 @@ const Editprofile = () => {
   }, []);
 
   const changeProfile = async () => {
-    console.log(image);
+   
     
     try {
       const res = await axios.put(`api/v1/user/edit-profile/${profiledata.profile._id}`,{image:image||profiledata.profile.image,bio:bio||profiledata.profile.bio});
       console.log(res.data);
-      window.alert(res.data.message)
+      
+      toast.success(res.data.message, {
+        ...toastStyles,
+        onClose: () => nav(`/user/${userName}`),
+       
+      });
       
     } catch (error) {
       console.log(error);
       
-       window.alert(error.response.data.message);
+      
+       toast.success(error.response.data.message, {
+        ...toastStyles,
+       
+      });
     }
   };
 
@@ -64,10 +80,18 @@ const Editprofile = () => {
     try {
       const res = await axios.post(`api/v1/user/add-profile`,{image,bio,userId,userName});
       console.log(res.data);
-      window.alert(res.data.message)
+     
+      toast.success(res.data.message, {
+        ...toastStyles,
+        onClose: () => nav(`/user/${userName}`),
+      });
       
     } catch (error) {
-       window.alert(error.response.data.message);
+      
+       toast.success(error.response.data.message, {
+        ...toastStyles,
+       
+      });
     }
   };
 
@@ -77,16 +101,10 @@ const Editprofile = () => {
   return (
     <div>
       <div className="h-screen">
-        <div className="flex  items-center justify-center">
-          <div className="h-[80px] w-[80px] max-[425px]:w-[70px] max-[425px]:h-[70px] ">
-            <img className="h-full w-full aspect-square" src={logo} alt="" />
-          </div>
-          <div>
-            <h1 className="font-QBold text-[35px] ">PickBook</h1>
-          </div>
-        </div>
+        <NavBar/>
+        
         <div className="h-[75%] flex items-center justify-center">
-          <div className="  mb-[4%] pt-[6%] w-[500px] max-[600px]:pt-[10%] ">
+          <div className="  mb-[4%] pt-[6%] mt-[200px] w-[500px] max-[600px]:pt-[10%] ">
             <h1 className="text-[40px] mb-[17%] max-[550px]:text-[30px] max-[370px]:text-[25px] font-QBold text-[#244262]">
               Edit Profile
             </h1>
@@ -96,7 +114,7 @@ const Editprofile = () => {
               name="filename"
               multiple
               accept=".jpg,.jpeg,.png"
-              className="p-[4%] bg-[#EBF5FF] w-full mb-[2%] font-gorditaRegular"
+              className="p-[4%] bg-[#EBF5FF] w-full max-[750px]:w-[65%] max-[500px]:w-[80%] mb-[2%] font-gorditaRegular"
               onChange={store}
             />
 
@@ -128,6 +146,8 @@ const Editprofile = () => {
           </div>
         </div>
       </div>
+      <Footer/>
+      <ToastContainer limit={1} />
     </div>
   );
 };

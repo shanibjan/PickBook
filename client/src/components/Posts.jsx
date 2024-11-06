@@ -20,8 +20,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./Footer";
 import imageCompression from "browser-image-compression";
 import { useNavigate } from "react-router-dom";
+import toastStyles from "../toastStyle";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import loading from "../images/buffering-colors.gif";
 const Posts = () => {
   const nav = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [userDetails, setUserDetails] = useState();
   const [isCommentVisible, setIsCommentVisible] = useState(false);
   const [description, setDescription] = useState();
@@ -30,29 +35,24 @@ const Posts = () => {
   const [profiledata, setProfileData] = useState();
   const [postIdForComment, setPostIdForComment] = useState();
   const [allComment, setAllComment] = useState([]);
- 
- const filteredPosts=post.filter((p)=>{
-  return(userDetails && (userDetails.following.includes(p.user._id) || userDetails._id===p.user._id) )
- })
- 
- 
- 
+
+  //  const filteredPosts=post.filter((p)=>{
+  //   return(userDetails && (userDetails.following.includes(p.user._id) || userDetails._id===p.user._id) )
+  //  })
+  console.log(post);
 
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
 
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
 
-
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
         `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
       );
-      if (res) {
-       
+      if (res.data) {
         setUserDetails(res.data.userDetails);
-       
       } else {
         setUserDetails();
       }
@@ -61,17 +61,23 @@ const Posts = () => {
 
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`api/v1/user/get-allposts`);
-      if (res) {
+      console.log(userDetails._id);
+      
+      const res = await axios.get(
+        `api/v1/user/get-filter-post/${userDetails._id}`
+      );
+      console.log(res.data);
+
+      if (res.data) {
         setPost(res.data);
+        setIsLoading(false);
       } else {
         setPost([]);
       }
     } catch (error) {}
   };
 
-  filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
+  post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const store = async (e) => {
     let val = e.target.files[0];
@@ -132,7 +138,7 @@ const Posts = () => {
 
   useEffect(() => {
     handleDataFromChild();
-   
+
     fetchProfile();
   }, []);
 
@@ -156,31 +162,38 @@ const Posts = () => {
           userName,
         }
       );
-      console.log(res.data);
+
+      toast.success(res.data.message, {
+        ...toastStyles,
+      });
       fetchPost();
     } catch (error) {
-      window.alert(error.response.data.message);
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   };
 
   const likePost = async (post) => {
-   
-    
-    
     try {
-      
       await axios.post("http://localhost:7000/api/v1/user/like-post", {
-        postId:post._id,
+        postId: post._id,
         userId,
       });
 
       fetchPost();
-      if(post.user._id !== userId){
-        const res= await axios.post('http://localhost:7000/api/v1/user/noti-like',{postUser:post.user._id,likedUser:userName,likedUserProfileId:profiledata._id,post:post.image})
-      console.log(res.data);
+      if (post.user._id !== userId) {
+        const res = await axios.post(
+          "http://localhost:7000/api/v1/user/noti-like",
+          {
+            postUser: post.user._id,
+            likedUser: userName,
+            likedUserProfileId: profiledata._id,
+            post: post.image,
+          }
+        );
+        console.log(res.data);
       }
-      
-      
     } catch (error) {
       console.log(error);
     }
@@ -188,42 +201,47 @@ const Posts = () => {
   const dislikePost = async (post) => {
     try {
       await axios.post("http://localhost:7000/api/v1/user/dislike-post", {
-        postId:post._id,
+        postId: post._id,
         userId,
       });
 
       fetchPost();
 
-      const res= await axios.post('http://localhost:7000/api/v1/user/noti-dislike',{postUser:post.user._id,post:post.image,likedUser:userName})
+      const res = await axios.post(
+        "http://localhost:7000/api/v1/user/noti-dislike",
+        { postUser: post.user._id, post: post.image, likedUser: userName }
+      );
       console.log(res.data);
-
-     
     } catch (error) {
       console.log(error);
     }
   };
 
-  const removePost=async(postId)=>{
+  const removePost = async (postId) => {
     try {
       console.log(postId);
-      
-      const res=await axios.delete(`http://localhost:7000/api/v1/user/remove-post/${postId}`)
-      fetchPost()
+
+      const res = await axios.delete(
+        `http://localhost:7000/api/v1/user/remove-post/${postId}`
+      );
+      fetchPost();
       console.log(res.data);
-      
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
   useEffect(() => {
     fetchPost();
-    fetchComment()
-    fetchUserDetails()
+    fetchComment();
+    fetchUserDetails();
   }, []);
   useEffect(() => {
-   
-    fetchComment()
+    
+      fetchPost();
+    
+  }, [userDetails]);
+  useEffect(() => {
+    fetchComment();
   }, [isCommentVisible]);
   return (
     // <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
@@ -292,121 +310,147 @@ const Posts = () => {
           </div>
         </div>
 
-        <div className="mt-[6%] max-[425px]:mt-[13%] overflow-y-auto grid grid-cols-2 gap-[1%] max-[800px]:grid-cols-1">
-          {filteredPosts &&
-            filteredPosts.map((item,index) => {
-           
-            
-              
-              
-              const filter=allComment.filter((name)=>name.post===item._id)
-             
-              
+        <div>
+          {isLoading ? (
+            <div className="h-[400px] max-[450px]:h-[300px]">
+              <img
+                src={loading}
+                alt=""
+                className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+              />
+            </div>
+          ) : null}
+          {post.length > 0 ? (
+            <div className="mt-[6%] max-[425px]:mt-[13%]  overflow-y-auto grid grid-cols-2 gap-[1%] max-[800px]:grid-cols-1">
+              {post.map((item, index) => {
+               
 
-              return (
-                <div className={`bg-white shadow-lg   p-[3%] rounded-[10px] ${
-                  index === filteredPosts.length - 1 ? "mb-[50px]" : "mb-0"
-                }`}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center w-[70%]">
-                      {item.profile ? (
-                        <img
-                          className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
-                          src={item.profile.image}
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
-                          src={user1}
-                          alt=""
-                        />
-                      )}
+                const filter = allComment.filter(
+                  (name) => name.post === item._id
+                );
 
-                      <div className="text-start ml-[5%]">
-                        <h1
-                          onClick={() => nav(`/user/${item.userName}`)}
-                          className="font-QSemi cursor-pointer max-[425px]:text-[15px] "
-                        >
-                          {item.userName}
-                        </h1>
-                        <p className="font-QRegular text-gray-500 max-[425px]:text-[12px]">
-                          {item.createdAt}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="dropdown">
-                      <FontAwesomeIcon icon={faEllipsis} />
-                      {item.user._id === userId ? (
-                        <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
-                          <li onClick={()=>removePost(item._id)} className="border-b-[1px]" >Remove post</li>
-                          <li  onClick={() => nav(`/user/${item.userName}`)} >Go to profile</li>
-                        </ul>
-                      ) : (
-                        <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
-                          
-                          <li  onClick={() => nav(`/user/${item.userName}`)} >Go to profile</li>
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="my-[4%]">
-                      <p className=" text-left font-QMedium max-[425px]:text-[12px]">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <img
-                      className="rounded-[20px] max-[425px]:rounded-[8px] w-full h-full aspect-square object-cover "
-                      src={item.image}
-                      alt=""
-                    />
-                  </div>
-                  <div className="mx-[1%] mt-[4%]">
-                    <div className="flex justify-between font-QSemi pb-[2%] border-b-[1px] max-[425px]:text-[13px] ">
-                      <div className="flex justify-between w-[45%] max-[1200px]:w-[50%] max-[1000px]:w-[60%] max-[850px]:w-[35%] max-[740px]:w-[45%] max-[560px]:w-[55%] max-[475px]:w-[63%]">
-                        <p>{item.like.length} Likes</p>
-                        <p>•</p>
-                        <p>{filter.length} Comments</p>
-                      </div>
-                      <div>
-                        <p>{item.share} Shares</p>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between mt-[2%] text-[25px] max-[1000px]:text-[20px] max-[425px]:text-[15px]">
-                      <div className="flex w-[25%] justify-between cursor-pointer max-[1000px]:w-[35%]">
-                        {item.like.includes(userId) ? (
-                          <FontAwesomeIcon
-                            onClick={() => dislikePost(item)}
-                            className="text-red-600"
-                            icon={faHeartSolid}
+                return (
+                  <div
+                    className={`bg-white shadow-lg   p-[3%] rounded-[10px] ${
+                      index === post.length - 1
+                        ? "max-[800px]:mb-[50px]"
+                        : "mb-0"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center w-[70%]">
+                        {item.profile ? (
+                          <img
+                            className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
+                            src={item.profile.image}
+                            alt=""
                           />
                         ) : (
-                          <FontAwesomeIcon
-                            onClick={() => likePost(item)}
-                            icon={faHeart}
+                          <img
+                            className="h-[60px] aspect-square  max-[600px]:h-[40px] max-[425px]:h-[35px] object-cover rounded-[50%]"
+                            src={user1}
+                            alt=""
                           />
                         )}
 
-                        <FontAwesomeIcon
-                          onClick={() => (
-                            setIsCommentVisible(true),
-                            setPostIdForComment(item._id)
-                          )}
-                          icon={faCommentDots}
-                        />
-                        <FontAwesomeIcon icon={faPaperPlane} />
+                        <div className="text-start ml-[5%]">
+                          <h1
+                            onClick={() => nav(`/user/${item.userName}`)}
+                            className="font-QSemi cursor-pointer max-[425px]:text-[15px] "
+                          >
+                            {item.userName}
+                          </h1>
+                          <p className="font-QRegular text-gray-500 max-[425px]:text-[12px]">
+                            {item.createdAt}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <FontAwesomeIcon icon={faBookmark} />
+                      <div className="dropdown">
+                        <FontAwesomeIcon icon={faEllipsis} />
+                        {item.user._id === userId ? (
+                          <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
+                            <li
+                              onClick={() => removePost(item._id)}
+                              className="border-b-[1px]"
+                            >
+                              Remove post
+                            </li>
+                            <li onClick={() => nav(`/user/${item.userName}`)}>
+                              Go to profile
+                            </li>
+                          </ul>
+                        ) : (
+                          <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
+                            <li onClick={() => nav(`/user/${item.userName}`)}>
+                              Go to profile
+                            </li>
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="my-[4%]">
+                        <p className=" text-left font-QMedium max-[425px]:text-[12px]">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <img
+                        className="rounded-[20px] max-[425px]:rounded-[8px] w-full h-full aspect-square object-cover "
+                        src={item.image}
+                        alt=""
+                      />
+                    </div>
+                    <div className="mx-[1%] mt-[4%]">
+                      <div className="flex justify-between font-QSemi pb-[2%] border-b-[1px] max-[425px]:text-[13px] ">
+                        <div className="flex justify-between w-[45%] max-[1200px]:w-[50%] max-[1000px]:w-[60%] max-[850px]:w-[35%] max-[740px]:w-[45%] max-[560px]:w-[55%] max-[475px]:w-[63%]">
+                          <p>{item.like.length} Likes</p>
+                          <p>•</p>
+                          <p>{filter.length} Comments</p>
+                        </div>
+                        <div>
+                          <p>{item.share} Shares</p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between mt-[2%] text-[25px] max-[1000px]:text-[20px] max-[425px]:text-[15px]">
+                        <div className="flex w-[25%] justify-between cursor-pointer max-[1000px]:w-[35%]">
+                          {item.like.includes(userId) ? (
+                            <FontAwesomeIcon
+                              onClick={() => dislikePost(item)}
+                              className="text-red-600"
+                              icon={faHeartSolid}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              onClick={() => likePost(item)}
+                              icon={faHeart}
+                            />
+                          )}
+
+                          <FontAwesomeIcon
+                            onClick={() => (
+                              setIsCommentVisible(true),
+                              setPostIdForComment(item._id)
+                            )}
+                            icon={faCommentDots}
+                          />
+                          <FontAwesomeIcon icon={faPaperPlane} />
+                        </div>
+                        <div>
+                          <FontAwesomeIcon icon={faBookmark} />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          ) : isLoading === false ? (
+            <div className="font-QSemi my-[4%] h-[300px] flex justify-center items-center">
+              <h1>Follow Users For Exploring Posts</h1>
+            </div>
+          ) : null}
         </div>
       </div>
       <AnimatePresence>
@@ -429,6 +473,7 @@ const Posts = () => {
         )}
       </AnimatePresence>
       <Footer />
+      <ToastContainer limit={1} />
     </div>
   );
 };

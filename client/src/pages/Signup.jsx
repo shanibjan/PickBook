@@ -3,6 +3,9 @@ import logo from "../images/—Pngtree—the letter p on a_15885322.png";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toastStyles from "../toastStyle";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = ({}) => {
   const [name, setName] = useState();
@@ -11,9 +14,8 @@ const Signup = ({}) => {
   const [otp, setOtp] = useState();
   const [password, setPassword] = useState();
   const [bar, setBar] = useState("phone");
-  
 
-  const nav=useNavigate()
+  const nav = useNavigate();
 
   const handleInputChange = (e) => {
     // Ensure the value always starts with +91
@@ -34,17 +36,24 @@ const Signup = ({}) => {
     try {
       if (valid === false) {
         const res = await axios.post("api/v1/auth/send-otp", { phone });
-        window.alert(res.data.message);
-        
+
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
+
         if (res.data.success) {
-          
           setBar("otp");
         }
       } else {
-        window.alert("Enter a valid Phone number ");
+        toast.success("Enter a valid Phone number ", {
+          ...toastStyles,
+        });
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+     
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   };
   const verifyOtp = async () => {
@@ -52,11 +61,15 @@ const Signup = ({}) => {
       const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
       console.log(res.data);
       if (res.data.success) {
-        window.alert(res.data.message);
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
         setBar("");
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   };
 
@@ -68,15 +81,24 @@ const Signup = ({}) => {
         phone,
       });
       if (res.data.success) {
-        localStorage.setItem('pickbook-token', res.data.token);
-        localStorage.setItem('pickbook-user', JSON.stringify(res.data.user));
-        window.alert(res.data.message);
-        nav("/");
+        localStorage.setItem("pickbook-token", res.data.token);
+        localStorage.setItem("pickbook-user", JSON.stringify(res.data.user));
+
+        toast.success(res.data.message, {
+          ...toastStyles,
+          onClose: () => nav('/'),
+        });
+      
       } else {
-        window.alert(res.data.message);
+        toast.success(res.data.message, {
+          ...toastStyles,
+        });
       }
     } catch (error) {
-      window.alert(error.response.data.message);
+      window.alert();
+      toast.success(error.response.data.message, {
+        ...toastStyles,
+      });
     }
   };
   return (
@@ -132,7 +154,10 @@ const Signup = ({}) => {
                 onChange={(e) => setOtp(e.target.value)}
               />
               <br />
-              <p  onClick={sendOtp} className="font-QMedium cursor-pointer text-[#8735C8]">
+              <p
+                onClick={sendOtp}
+                className="font-QMedium cursor-pointer text-[#8735C8]"
+              >
                 Didn't get the code ?.Resend Code
               </p>
             </div>
@@ -180,11 +205,15 @@ const Signup = ({}) => {
             </button>
           )}
 
-          <h4 onClick={()=>nav('/login')} className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]">
+          <h4
+            onClick={() => nav("/login")}
+            className="text-[20px] max-[450px]:text-[15px] font-QMedium text-[#244262] cursor-pointer my-[3%]"
+          >
             Go to Login page
           </h4>
         </div>
       </div>
+      <ToastContainer limit={1} />
     </div>
   );
 };

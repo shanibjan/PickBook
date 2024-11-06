@@ -13,26 +13,24 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import Login from "./Login";
 import axios from "axios";
+import loading from "../images/buffering-colors.gif";
 
 const UserProfile = () => {
   const { pickBookUserName } = useParams();
-
+  const [isLoading, setIsLoading] = useState(true);
   const [profiledata, setProfileData] = useState();
   const [selfProfiledata, setSelfProfileData] = useState();
   const [userDetails, setUserDetails] = useState();
   const [post, setPost] = useState([]);
   const [allComment, setAllComment] = useState([]);
-const[followers,setFollowers]=useState([])
+  const [followers, setFollowers] = useState([]);
   const nav = useNavigate();
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
-console.log(userId);
+  
 
-
-
- 
-post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const fetchComment = async () => {
     try {
       const res = await axios.get(
@@ -54,7 +52,7 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       if (res) {
         setProfileData(res.data.profile);
         setUserDetails(res.data.userDetails);
-        setFollowers(res.data.followers)
+        setFollowers(res.data.followers);
       } else {
         setProfileData();
       }
@@ -81,48 +79,58 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       );
       if (res) {
         setPost(res.data);
+        setIsLoading(false);
       } else {
         setPost([]);
       }
     } catch (error) {}
   };
 
-  const follow = async()=>{
+  const follow = async () => {
     try {
-      const res=await axios.post('http://localhost:7000/api/v1/user/follow',{followerId:userId,followingId:userDetails._id})
-      fetchProfile()
-      
-      const response=await axios.post('http://localhost:7000/api/v1/user/noti-follow',{followerProfileId:selfProfiledata._id,follower:userName,following:userDetails._id})
-      console.log(response.data);
-      
+      const res = await axios.post("http://localhost:7000/api/v1/user/follow", {
+        followerId: userId,
+        followingId: userDetails._id,
+      });
+      fetchProfile();
 
-      
+      const response = await axios.post(
+        "http://localhost:7000/api/v1/user/noti-follow",
+        {
+          followerProfileId: selfProfiledata._id,
+          follower: userName,
+          following: userDetails._id,
+        }
+      );
+      console.log(response.data);
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
-  const unfollow = async()=>{
+  const unfollow = async () => {
     try {
-      const res=await axios.post('http://localhost:7000/api/v1/user/unfollow',{followerId:userId,followingId:userDetails._id})
-      fetchProfile()
-     
+      const res = await axios.post(
+        "http://localhost:7000/api/v1/user/unfollow",
+        { followerId: userId, followingId: userDetails._id }
+      );
+      fetchProfile();
 
-      const response=await axios.post('http://localhost:7000/api/v1/user/noti-unfollow',{unfollower:userName,postUser:userDetails._id})
+      const response = await axios.post(
+        "http://localhost:7000/api/v1/user/noti-unfollow",
+        { unfollower: userName, postUser: userDetails._id }
+      );
       console.log(response.data);
-      
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
   useEffect(() => {
     fetchPost();
     fetchProfile();
     fetchComment();
-    fetchSelfProfile()
+    fetchSelfProfile();
   }, []);
 
   useEffect(() => {
@@ -172,16 +180,26 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                       </div>
                     ) : (
                       <div className=" flex justify-between w-[60%] max-[750px]:hidden">
-                       {userDetails && userDetails.followers.includes(userId) ? (
-                      <button onClick={unfollow} className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
-                        Unfollow
-                      </button>
-                    ) : (
-                      <button  onClick={follow} className="bg-[#8735C8] font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
-                        Follow
-                      </button>
-                    )}
-                        <button onClick={()=>nav(`/message/${profiledata.user}`)} className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md ">
+                        {userDetails &&
+                        userDetails.followers.includes(userId) ? (
+                          <button
+                            onClick={unfollow}
+                            className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md "
+                          >
+                            Unfollow
+                          </button>
+                        ) : (
+                          <button
+                            onClick={follow}
+                            className="bg-[#8735C8] font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md "
+                          >
+                            Follow
+                          </button>
+                        )}
+                        <button
+                          onClick={() => nav(`/message/${profiledata.user}`)}
+                          className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md "
+                        >
                           Message
                         </button>
                       </div>
@@ -227,42 +245,49 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     <div className="font-QSemi text-start">
                       <h2>{profiledata ? profiledata.bio : null}</h2>
                     </div>
-                    {followers.length>0 &&<div className="flex font-QMedium  my-[3%]">
-                      
-                      <p className="text-gray-500 mr-[1%]">Followed by </p>
-                      {followers.length>0 && followers.map((follower,index)=>{
-                        if(index<2)
-                        return(
-                          <p className="font-QSemi">{follower.name} ,</p>
-                        )
-                      })}
-                     
-                    {followers.length>2&&
-                     <p className="text-gray-500 ml-[1%]">and {followers.length-2} more</p>}
-                     
-                    </div>}
-                    
+                    {followers.length > 0 && (
+                      <div className="flex font-QMedium  my-[3%]">
+                        <p className="text-gray-500 mr-[1%]">Followed by </p>
+                        {followers.length > 0 &&
+                          followers.map((follower, index) => {
+                            if (index < 2)
+                              return (
+                                <p className="font-QSemi">{follower.name} ,</p>
+                              );
+                          })}
+
+                        {followers.length > 2 && (
+                          <p className="text-gray-500 ml-[1%]">
+                            and {followers.length - 2} more
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
               <div className=" hidden max-[540px]:text-[12px] max-[750px]:block">
-              <div className="font-QSemi text-start">
-                      <h2>{profiledata ? profiledata.bio : null}</h2>
-                    </div>
-                    {followers.length>0 &&<div className="flex font-QMedium  my-[3%]">
-                      
-                      <p className="text-gray-500 mr-[1%]">Followed by </p>
-                      {followers.length>0 && followers.map((follower,index)=>{
-                        if(index<2)
-                        return(
-                          <p className="font-QSemi">{follower.name} ,</p>
-                        )
+                <div className="font-QSemi text-start">
+                  <h2>{profiledata ? profiledata.bio : null}</h2>
+                </div>
+                {followers.length > 0 && (
+                  <div className="flex font-QMedium  my-[3%]">
+                    <p className="text-gray-500 mr-[1%]">Followed by </p>
+                    {followers.length > 0 &&
+                      followers.map((follower, index) => {
+                        if (index < 2)
+                          return (
+                            <p className="font-QSemi">{follower.name} ,</p>
+                          );
                       })}
-                     
-                    {followers.length>2&&
-                     <p className="text-gray-500 ml-[1%]">and {followers.length-2} more</p>}
-                     
-                    </div>}
+
+                    {followers.length > 2 && (
+                      <p className="text-gray-500 ml-[1%]">
+                        and {followers.length - 2} more
+                      </p>
+                    )}
+                  </div>
+                )}
                 {pickBookUserName === userName ? (
                   <div className="flex">
                     <button
@@ -278,16 +303,25 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 ) : (
                   <div className="flex">
                     {userDetails && userDetails.followers.includes(userId) ? (
-                      <button onClick={unfollow} className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                      <button
+                        onClick={unfollow}
+                        className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]"
+                      >
                         Unfollow
                       </button>
                     ) : (
-                      <button onClick={follow} className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]">
+                      <button
+                        onClick={follow}
+                        className="bg-[#8735C8] font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] mr-[7%]"
+                      >
                         Follow
                       </button>
                     )}
 
-                    <button onClick={()=>nav(`/message/${profiledata.user}`)} className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] ">
+                    <button
+                      onClick={() => nav(`/message/${profiledata.user}`)}
+                      className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] "
+                    >
                       Message
                     </button>
                   </div>
@@ -300,10 +334,19 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 <FontAwesomeIcon className="mr-[1%]" icon={faTableCells} />
                 <h2 className="font-QSemi ml-[1%] ">POSTS</h2>
               </div>
+              {isLoading ? (
+                <div className="h-[400px] max-[450px]:h-[300px]">
+                  <img
+                    src={loading}
+                    alt=""
+                    className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+                  />
+                </div>
+              ) : null}
 
-              <div className="grid grid-cols-3 gap-2 mb-[10%] ">
-                {post &&
-                  post.map((post) => {
+              {post.length>0 ? (
+                <div className="grid grid-cols-3 gap-2 mb-[10%] ">
+                  {post.map((post) => {
                     const filter = allComment.filter(
                       (name) => name.post === post._id
                     );
@@ -329,7 +372,10 @@ post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                       </div>
                     );
                   })}
-              </div>
+                </div>
+              ):isLoading===false?(<div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center" >
+                <h1>No Posts yet</h1>
+              </div>):null}
             </div>
           </div>
         </div>

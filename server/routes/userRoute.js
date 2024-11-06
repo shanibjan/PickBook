@@ -91,7 +91,7 @@ router.post("/add-post", async (req, res) => {
     const post = await item.save();
     res.status(201).send({
       success: true,
-      message: " post added",
+      message: "Post added",
       post,
     });
   } catch (error) {
@@ -132,11 +132,17 @@ router.get("/get-post-over-view/:id", async (req, res) => {
   try {
     const postId = req.params.id;
 
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: "Invalid PostId" });
+    }
+
     const post = await postModel
       .findOne({ _id: postId })
       .populate("user", "name")
       .populate("profile", "image");
     res.status(201).send(post);
+   
+    
   } catch (error) {
     console.log(error);
   }
@@ -188,6 +194,9 @@ router.post("/add-comment", async (req, res) => {
 router.get("/get-comment/:id", async (req, res) => {
   try {
     const post = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(post)) {
+      return res.status(400).json({ message: "Invalid PostId" });
+    }
 
     const comment = await commentModel
       .find({ post })
@@ -458,6 +467,24 @@ router.get('/get-chatters/:id',async(req,res)=>{
     
   } catch (error) {
     console.log(error);
+  }
+})
+
+router.get('/get-filter-post/:id',async(req,res)=>{
+  try {
+
+    const userId=req.params.id
+    console.log(userId);
+    
+    const user=await userModel.findOne({_id:userId})
+    const post=await postModel.find({ user: { $in: [...user.following, userId] }}).populate("user", "name")
+    .populate("profile", "image"); 
+    console.log(post.length);
+    
+    res.status(201).send(post);
+  } catch (error) {
+    console.log(error);
+    
   }
 })
 

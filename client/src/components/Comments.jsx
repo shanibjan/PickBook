@@ -5,22 +5,22 @@ import { faFaceSmile, faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import user2 from "../images/user.png";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
+import loading from "../images/buffering-colors.gif";
+
 
 const Comments = ({ onDataSend, postId }) => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
-
+  const [isLoading, setIsLoading] = useState(true);
   const userName = user ? user.name : null;
 
   const [hide, setHide] = useState(true);
   const [profiledata, setProfileData] = useState();
   const [comm, setComm] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
-  console.log(comm);
-  
- 
+
   const onEmojiClick = (emojiData) => {
-    setCommentFromUser((prevInput) => prevInput + emojiData.emoji); 
-    setShowPicker(false)// Correct emoji property
+    setCommentFromUser((prevInput) => prevInput + emojiData.emoji);
+    setShowPicker(false); // Correct emoji property
     // Hide emoji picker after selection
   };
 
@@ -37,8 +37,9 @@ const Comments = ({ onDataSend, postId }) => {
       const res = await axios.get(
         `http://localhost:7000/api/v1/user/get-comment/${postId}`
       );
-      if (res) {
+      if (res.data) {
         setComm(res.data);
+        setIsLoading(false)
       } else {
         setComm();
       }
@@ -69,7 +70,7 @@ const Comments = ({ onDataSend, postId }) => {
           userName,
         }
       );
-      setCommentFromUser("")
+      setCommentFromUser("");
       fetchComment();
     } catch (error) {
       console.log(error);
@@ -92,7 +93,7 @@ const Comments = ({ onDataSend, postId }) => {
   }, []);
 
   return (
-    <div  className="dd fixed bottom-0 left-0 right-0 z-10 h-screen bg-[#FAFAFA] mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
+    <div className="dd fixed bottom-0 left-0 right-0 z-10 h-screen bg-[#FAFAFA] mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
       <div className="flex justify-between fixed w-[84%] max-[425px]:w-[90%] text-[25px] mx-[3%] mb-[3%] z-[1] bg-[#FAFAFA] p-[3%] max-[550px]:text-[20px] ">
         <h1 className="w-full font-QSemi">Comments</h1>
         <FontAwesomeIcon
@@ -101,11 +102,18 @@ const Comments = ({ onDataSend, postId }) => {
           icon={faXmark}
         />
       </div>
-      <div  className="absolute top-[85px] w-full">
-        {comm &&
-          comm.map((comment, index) => {
-          
-
+      {isLoading ? (
+        <div className="h-[400px] max-[450px]:h-[300px] absolute z-10 w-full top-[90px]">
+          <img
+            src={loading}
+            alt=""
+            className="mx-auto max-[550px]:h-[50px] max-[400px]:h-[25px]"
+          />
+        </div>
+      ) : null}
+      {comm.length>0 ? (
+        <div className="absolute top-[85px] w-full">
+          {comm.map((comment, index) => {
             return (
               <div
                 className={`flex bg-white rounded-[20px] my-[3%] mx-[4%] p-[2%] ${
@@ -144,7 +152,10 @@ const Comments = ({ onDataSend, postId }) => {
               </div>
             );
           })}
-      </div>
+        </div>
+      ):isLoading===false?(<div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center" >
+        <h1>No comments yet</h1>
+      </div>):null}
 
       <div className="flex fixed bottom-0 w-[84%] max-[425px]:w-[90%] bg-white rounded-[20px] justify-between items-center mx-[3%] p-[2%]  ">
         <div className="h-[60px] flex items-center">
@@ -167,7 +178,10 @@ const Comments = ({ onDataSend, postId }) => {
             <EmojiPicker onEmojiClick={onEmojiClick} />
           </div>
         )}
-        <button className="max-[425px]:hidden text-[25px]" onClick={() => setShowPicker(!showPicker)}>
+        <button
+          className="max-[425px]:hidden text-[25px]"
+          onClick={() => setShowPicker(!showPicker)}
+        >
           <FontAwesomeIcon icon={faFaceSmile} />
         </button>
         <input
