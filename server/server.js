@@ -58,9 +58,11 @@ io.on('connection', (socket) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+
+// Serve the index.html file for any unknown paths
 app.get('*', (req, res) => {
-    
-  res.sendFile(path.join(__dirname, '..', 'client','public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
 });
 
 // Use `server.listen` instead of `app.listen`
