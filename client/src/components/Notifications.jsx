@@ -37,7 +37,7 @@ const Notification = ({ onDataSend }) => {
   }, []);
 
   return (
-    <div className="dd fixed bottom-0 left-0 right-0 z-10 h-screen bg-[#FAFAFA] mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px]  shadow-lg">
+    <div className="dd fixed bottom-0 left-0 right-0 z-10 h-[90vh] bg-[#FAFAFA] mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px]  shadow-lg">
       <div className="flex justify-between fixed w-[84%] max-[425px]:w-[90%] text-[25px] mx-[3%] mb-[3%] z-[1000] bg-[#FAFAFA] p-[3%] items-center max-[550px]:text-[20px] ">
         <h1 className="w-full font-QSemi">Notifications</h1>
         <FontAwesomeIcon
