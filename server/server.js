@@ -16,12 +16,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Replace with your client URL
-    methods: ["GET", "POST"],
+    origin: "https://pickbook-app.onrender.com", // Replace with your client URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+
   },
 });
 
-app.use(cors());
+app.use(cors(cors));
 connectDB();
 app.use(express.json({ limit: '10mb' })); 
 
