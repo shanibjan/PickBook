@@ -137,17 +137,17 @@ const clickSearch=()=>{
         </div>
       </div>
         <div className="flex justify-between items-center cursor-pointer w-[20%] max-[800px]:hidden">
-          <div className="h-[25px]">
+          <div className="h-[25px] w-[25px]">
             <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
           </div>
-          <div onClick={()=>nav(`/message/${userId}`)} className="h-[25px]">
+          <div onClick={()=>nav(`/message/${userId}`)} className="h-[25px] w-[25px]">
             <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
           </div>
-          <div className="h-[25px]" onClick={() => setIsCommentVisible(true)}>
+          <div className="h-[25px] w-[25px]" onClick={() => setIsCommentVisible(true)}>
             <FontAwesomeIcon icon={faBell} className="w-full h-full" />
           </div>
-          <div onClick={()=>nav(`/user/${userName}`)} className="h-[50px]">
-            {profiledata?( <img className="h-full aspect-square object-cover rounded-[50%]" src={profiledata.image} alt="" />):( <img className="h-full" src={userimg} alt="" />)}
+          <div onClick={()=>nav(`/user/${userName}`)} className="h-[50px] w-[50px]">
+            {profiledata?( <img className="h-full w-full  object-cover rounded-[50%]" src={profiledata.image} alt="" />):( <img className="h-full w-full" src={userimg} alt="" />)}
            
           </div>
         </div>

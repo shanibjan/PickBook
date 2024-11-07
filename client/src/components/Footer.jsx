@@ -55,21 +55,21 @@ const Footer = () => {
   return (
     <div>
       <div className=" fixed bottom-0 w-full bg-white px-[5%] py-[2%] items-center hidden max-[800px]:flex justify-between ">
-      <div onClick={()=>nav('/')} className="h-[35px] max-[500px]:h-[30px]">
+      <div onClick={()=>nav('/')} className="h-[35px] w-[35px] max-[500px]:h-[30px] max-[500px]:w-[30px]">
         <img src={logo} alt="" className="w-full h-full" />
           
         </div>
         
-        <div className="h-[25px] max-[500px]:h-[20px]">
+        <div className="h-[25px] w-[25px] max-[500px]:h-[20px]  max-[500px]:w-[20px]">
           <FontAwesomeIcon icon={faSquarePlus} className="w-full h-full" />
         </div>
         <div
           onClick={() => nav(`/message/${userId}`)}
-          className="h-[25px] max-[500px]:h-[20px] "
+          className="h-[25px] w-[25px] max-[500px]:h-[20px]  max-[500px]:w-[20px] "
         >
           <FontAwesomeIcon icon={faMessage} className="w-full h-full" />
         </div>
-        <div className="h-[25px] max-[500px]:h-[20px] ">
+        <div className="h-[25px] w-[25px] max-[500px]:h-[20px]  max-[500px]:w-[20px] ">
           <FontAwesomeIcon
             onClick={() => setIsCommentVisible(true)}
             icon={faBell}
@@ -78,16 +78,16 @@ const Footer = () => {
         </div>
         <div
           onClick={()=>nav(`/user/${userName}`)}
-          className="h-[25px] max-[500px]:h-[20px] "
+          className="h-[25px] w-[25px] max-[500px]:h-[20px]  max-[500px]:w-[20px] "
         >
           {profiledata? (
             <img
-              className="h-full aspect-square rounded-[50%]"
+              className="h-full w-full aspect-square rounded-[50%]"
               src={profiledata.image}
               alt=""
             />
           ) : (
-            <img className="h-full" src={userimg} alt="" />
+            <img className="h-full w-full" src={userimg} alt="" />
           )}
         </div>
       </div>
