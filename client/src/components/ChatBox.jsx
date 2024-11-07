@@ -136,8 +136,8 @@ const ChatBox = ({ onDataSend, receiverId }) => {
     onDataSend(hide);
   }, [hide]);
   return (
-    <div className="hidden max-[800px]:block fixed bottom-0 left-0 right-0 z-10 h-screen  mx-[5%] max-[425px]:mx-[2%] overflow-y-scroll rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
-      <div className="bg-white shadow-lg w-full h-screen overflow-y-scroll   ">
+    <div className="hidden max-[800px]:block fixed bottom-0 left-0 right-0 z-10 h-screen  mx-[5%] max-[425px]:mx-[2%]  rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
+      <div className="bg-white shadow-lg w-full h-full overflow-y-scroll   ">
         <div className="flex justify-between items-center px-[1%] pb-[1%] pt-[2%] border-b-[1px]  bg-white z-10 fixed w-[90%] max-[425px]:w-[96%]  ">
           {profileDp && (
             <div className="flex items-center font-QSemi max-[425px]:text-[15px]">

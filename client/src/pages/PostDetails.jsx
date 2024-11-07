@@ -34,8 +34,7 @@ const PostDetails = () => {
   posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   let { postId } = useParams();
-  console.log(postId)
-  console.log(post);
+  
   
   
   
@@ -153,7 +152,7 @@ const PostDetails = () => {
 
   const likePost = async (postId) => {
     try {
-      await axios.post("http://localhost:7000/api/v1/user/like-post", {
+      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/like-post", {
         postId,
         userId,
       });
@@ -161,7 +160,7 @@ const PostDetails = () => {
       fetchPost();
       if (post.user._id !== userId) {
         const res = await axios.post(
-          "http://localhost:7000/api/v1/user/noti-like",
+          "https://pickbook-da7f.onrender.com/api/v1/user/noti-like",
           {
             postUser: post.user._id,
             likedUser: userName,
@@ -177,14 +176,14 @@ const PostDetails = () => {
   };
   const dislikePost = async (postId) => {
     try {
-      await axios.post("http://localhost:7000/api/v1/user/dislike-post", {
+      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/dislike-post", {
         postId,
         userId,
       });
 
       fetchPost();
       const res = await axios.post(
-        "http://localhost:7000/api/v1/user/noti-dislike",
+        "https://pickbook-da7f.onrender.com/api/v1/user/noti-dislike",
         { postUser: post.user._id, post: post.image, likedUser: userName }
       );
       console.log(res.data);

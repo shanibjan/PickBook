@@ -55,8 +55,9 @@ const nav=useNavigate()
   const changeProfile = async () => {
    
     
+    
     try {
-      const res = await axios.put(`https://pickbook-da7f.onrender.com/api/v1/user/edit-profile/${profiledata.profile._id}`,{image:image||profiledata.profile.image,bio:bio||profiledata.profile.bio});
+      const res = await axios.put(`https://pickbook-da7f.onrender.com/api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
       console.log(res.data);
       
       toast.success(res.data.message, {
