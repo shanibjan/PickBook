@@ -22,7 +22,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import loading from "../images/buffering-colors.gif";
 
-export const socket = io("http://localhost:7000", {
+export const socket = io("https://pickbook-da7f.onrender.com", {
   transports: ["websocket", "polling"], // Enable both transports
 });
 
@@ -44,7 +44,7 @@ const Message = () => {
   const fetchUserProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-chat/${receiverId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
       );
       if (res && receiverId !== userId) {
         setProfileDp(res.data);
@@ -58,7 +58,7 @@ const Message = () => {
   const fetchMessageBox = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-chatters/${userId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-chatters/${userId}`
       );
       if (res.data) {
         setMessageBoxes(res.data);
@@ -101,7 +101,7 @@ const Message = () => {
   const fetchMessage = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-messages/${userId}/${receiverId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-messages/${userId}/${receiverId}`
       );
       if (res) {
         setMessages(res.data);

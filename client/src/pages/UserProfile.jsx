@@ -34,7 +34,7 @@ const UserProfile = () => {
   const fetchComment = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-all-comments`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-all-comments`
       );
       if (res) {
         setAllComment(res.data);
@@ -47,7 +47,7 @@ const UserProfile = () => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-users/${pickBookUserName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${pickBookUserName}`
       );
       if (res) {
         setProfileData(res.data.profile);
@@ -62,7 +62,7 @@ const UserProfile = () => {
   const fetchSelfProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setSelfProfileData(res.data.profile);
@@ -75,7 +75,7 @@ const UserProfile = () => {
   const fetchPost = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-posts-for-users/${pickBookUserName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-posts-for-users/${pickBookUserName}`
       );
       if (res) {
         setPost(res.data);
@@ -88,14 +88,14 @@ const UserProfile = () => {
 
   const follow = async () => {
     try {
-      const res = await axios.post("http://localhost:7000/api/v1/user/follow", {
+      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/follow", {
         followerId: userId,
         followingId: userDetails._id,
       });
       fetchProfile();
 
       const response = await axios.post(
-        "http://localhost:7000/api/v1/user/noti-follow",
+        "https://pickbook-da7f.onrender.com/api/v1/user/noti-follow",
         {
           followerProfileId: selfProfiledata._id,
           follower: userName,
@@ -111,13 +111,13 @@ const UserProfile = () => {
   const unfollow = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:7000/api/v1/user/unfollow",
+        "https://pickbook-da7f.onrender.com/api/v1/user/unfollow",
         { followerId: userId, followingId: userDetails._id }
       );
       fetchProfile();
 
       const response = await axios.post(
-        "http://localhost:7000/api/v1/user/noti-unfollow",
+        "https://pickbook-da7f.onrender.com/api/v1/user/noti-unfollow",
         { unfollower: userName, postUser: userDetails._id }
       );
       console.log(response.data);

@@ -17,7 +17,7 @@ const Notification = ({ onDataSend }) => {
   const fetchNoti = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-notification/${userId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-notification/${userId}`
       );
 
       setNoti([...res.data.like, ...res.data.follow]);

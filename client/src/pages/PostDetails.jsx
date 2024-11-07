@@ -49,7 +49,7 @@ const PostDetails = () => {
   const fetchComment = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-comment/${postId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-comment/${postId}`
       );
       if (res) {
         setComm(res.data);
@@ -63,7 +63,7 @@ const PostDetails = () => {
   const fetchPost = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-post-over-view/${postId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-post-over-view/${postId}`
       );
      
       if (res.data) {
@@ -86,7 +86,7 @@ const PostDetails = () => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setProfileData(res.data.profile);
@@ -99,7 +99,7 @@ const PostDetails = () => {
   const fetchPosts = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-posts-for-users/${
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-posts-for-users/${
           post && post.userName
         }`
       );

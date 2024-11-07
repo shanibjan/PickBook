@@ -3,12 +3,11 @@ import './App.css';
 import Home from "./pages/home";
 import UserProfile from "./pages/UserProfile";
 import PostDetails from "./pages/PostDetails";
-import Profile from "./pages/Profile";
 import Message from "./pages/Message";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Editprofile from "./pages/Editprofile";
-import Chat from "./pages/Chat";
+
 import Noti from "./pages/Noti";
 
 function App() {
@@ -19,11 +18,11 @@ function App() {
      <Route  path="/signup" element={<Signup/>} />
       <Route exact path="/" element={<Home/>} />
       <Route  path="/user/:pickBookUserName" element={<UserProfile/>} />
-      <Route  path="/profile" element={<Profile/>} />
+      
       <Route  path="/post/:postId" element={<PostDetails/>} />
       <Route  path="/message/:receiverId" element={<Message/>} />
       <Route  path="/edit-profile" element={<Editprofile/>} />
-      <Route  path="/chat" element={<Chat/>} />
+      
       <Route  path="/noti" element={<Noti/>} />
      </Routes>
     

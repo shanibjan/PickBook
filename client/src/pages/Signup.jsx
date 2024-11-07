@@ -35,7 +35,7 @@ const Signup = ({}) => {
   const sendOtp = async () => {
     try {
       if (valid === false) {
-        const res = await axios.post("api/v1/auth/send-otp", { phone });
+        const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/send-otp", { phone });
 
         toast.success(res.data.message, {
           ...toastStyles,
@@ -58,7 +58,7 @@ const Signup = ({}) => {
   };
   const verifyOtp = async () => {
     try {
-      const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
+      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/verify-phone", { phone, otp });
       console.log(res.data);
       if (res.data.success) {
         toast.success(res.data.message, {
@@ -75,7 +75,7 @@ const Signup = ({}) => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post("/api/v1/auth/register", {
+      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/register", {
         name,
         password,
         phone,

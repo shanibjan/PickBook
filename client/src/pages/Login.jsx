@@ -36,7 +36,7 @@ const Login = () => {
 
   const login = async () => {
     try {
-      const res = await axios.post("/api/v1/auth/login", {
+      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/login", {
         password,
         phone,
       });
@@ -65,7 +65,7 @@ const Login = () => {
   const sendOtp=async()=>{
     try {
       if (valid === false) {
-        const res = await axios.post("api/v1/auth/send-otp-forgot-password", { phone });
+        const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/send-otp-forgot-password", { phone });
       
         toast.success(res.data.message, {
           ...toastStyles,
@@ -92,7 +92,7 @@ const Login = () => {
 
   const verifyOtp = async () => {
     try {
-      const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
+      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/verify-phone", { phone, otp });
       console.log(res.data);
       if (res.data.success) {
       
@@ -113,7 +113,7 @@ const Login = () => {
     try {
      
       
-      const res= await axios.put('api/v1/auth/change-password',{phone,password})
+      const res= await axios.put('https://pickbook-da7f.onrender.com/api/v1/auth/change-password',{phone,password})
       console.log(res.data);
       if (res.data.success) {
       

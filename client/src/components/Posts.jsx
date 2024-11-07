@@ -49,7 +49,7 @@ const Posts = () => {
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res.data) {
         setUserDetails(res.data.userDetails);
@@ -64,7 +64,7 @@ const Posts = () => {
       console.log(userDetails._id);
       
       const res = await axios.get(
-        `api/v1/user/get-filter-post/${userDetails._id}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-filter-post/${userDetails._id}`
       );
       console.log(res.data);
 
@@ -109,7 +109,7 @@ const Posts = () => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setProfileData(res.data.profile);
@@ -122,7 +122,7 @@ const Posts = () => {
   const fetchComment = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/get-all-comments`
+        `https://pickbook-da7f.onrender.com/api/v1/user/get-all-comments`
       );
       if (res) {
         setAllComment(res.data);
@@ -153,7 +153,7 @@ const Posts = () => {
   const addPost = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:7000/api/v1/user/add-post",
+        "https://pickbook-da7f.onrender.com/api/v1/user/add-post",
         {
           profileData: profiledata._id,
           userId,
@@ -176,7 +176,7 @@ const Posts = () => {
 
   const likePost = async (post) => {
     try {
-      await axios.post("http://localhost:7000/api/v1/user/like-post", {
+      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/like-post", {
         postId: post._id,
         userId,
       });
@@ -184,7 +184,7 @@ const Posts = () => {
       fetchPost();
       if (post.user._id !== userId) {
         const res = await axios.post(
-          "http://localhost:7000/api/v1/user/noti-like",
+          "https://pickbook-da7f.onrender.com/api/v1/user/noti-like",
           {
             postUser: post.user._id,
             likedUser: userName,
@@ -200,7 +200,7 @@ const Posts = () => {
   };
   const dislikePost = async (post) => {
     try {
-      await axios.post("http://localhost:7000/api/v1/user/dislike-post", {
+      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/dislike-post", {
         postId: post._id,
         userId,
       });
@@ -208,7 +208,7 @@ const Posts = () => {
       fetchPost();
 
       const res = await axios.post(
-        "http://localhost:7000/api/v1/user/noti-dislike",
+        "https://pickbook-da7f.onrender.com/api/v1/user/noti-dislike",
         { postUser: post.user._id, post: post.image, likedUser: userName }
       );
       console.log(res.data);
@@ -222,7 +222,7 @@ const Posts = () => {
       console.log(postId);
 
       const res = await axios.delete(
-        `http://localhost:7000/api/v1/user/remove-post/${postId}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/remove-post/${postId}`
       );
       fetchPost();
       console.log(res.data);
@@ -244,21 +244,7 @@ const Posts = () => {
     fetchComment();
   }, [isCommentVisible]);
   return (
-    // <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
-    //             <h2 className="mr-2 text-left  ">
-    //               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-    //               Assumenda asperiores vero vel quasi animi accusantium id rem?
-    //               Temporibus architecto necessitatibus dolor? Velit distinctio
-    //               eaque amet magnam aspernatur, eligendi molestias ea?
-    //             </h2>
-    //             <h3 className="text-gray-500">12:54</h3>
-    //           </div>
-    //           <div className="bg-gray-100 p-3 mt-4 mr-2 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl items-end flex max-w-[75%]">
-    //             <h2 className="mr-2 text-left ">
-    //               Lorem ipmenda asperiores vero vel quasi
-    //             </h2>
-    //             <h3 className="text-gray-500">12:54</h3>
-    //           </div>
+   
 
     <div className="relative">
       <div className=" w-[90%] overflow-y-scroll  m-[5%] absolute top-[20px] max-[600px]:top-[35px] bg-[#FAFAFA] p-[3%] rounded-[10px]">
