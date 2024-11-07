@@ -22,7 +22,7 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors(cors));
+app.use(cors());
 connectDB();
 app.use(express.json({ limit: '10mb' })); 
 
