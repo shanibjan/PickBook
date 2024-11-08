@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4d9114dd.css",
-    "main.js": "/static/js/main.8197d3ef.js",
+    "main.js": "/static/js/main.655b980a.js",
     "static/js/453.419a5d54.chunk.js": "/static/js/453.419a5d54.chunk.js",
     "static/media/—Pngtree—the letter p on a_15885322.png": "/static/media/—Pngtree—the letter p on a_15885322.8dd39487abe1bbbabf18.png",
     "static/media/Quicksand-Medium.ttf": "/static/media/Quicksand-Medium.9fd398f86ce80d968762.ttf",
@@ -13,11 +13,11 @@
     "static/media/user.png": "/static/media/user.a6143582309785dca610.png",
     "index.html": "/index.html",
     "main.4d9114dd.css.map": "/static/css/main.4d9114dd.css.map",
-    "main.8197d3ef.js.map": "/static/js/main.8197d3ef.js.map",
+    "main.655b980a.js.map": "/static/js/main.655b980a.js.map",
     "453.419a5d54.chunk.js.map": "/static/js/453.419a5d54.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4d9114dd.css",
-    "static/js/main.8197d3ef.js"
+    "static/js/main.655b980a.js"
   ]
 }

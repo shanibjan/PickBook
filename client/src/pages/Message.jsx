@@ -49,7 +49,7 @@ console.log(profileDp);
         `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
       );
       if (res && receiverId !== userId) {
-        setProfileDp(res.data);
+        setProfileDp(res.data.profile?res.data.profile:res.data.user);
         setIsCommentVisible(true);
       } else if (receiverId === userId) {
         setProfileDp();
