@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import userimg from "../images/user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -32,13 +32,15 @@ const Message = () => {
   const [profileDp, setProfileDp] = useState();
   const [messageBoxes, setMessageBoxes] = useState([]);
   const nav = useNavigate();
+console.log(profileDp);
 
   const [messages, setMessages] = useState([]);
-
+  const[senderprofile,setSenderprofile]=useState()
   const [newMessage, setNewMessage] = useState("");
-
+  const [isCommentVisible, setIsCommentVisible] = useState(false);
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
+  const userName = user ? user.name: null;
   let orderedMessageBox = messageBoxes.slice().reverse();
 
   const fetchUserProfile = async () => {
@@ -54,6 +56,21 @@ const Message = () => {
       }
     } catch (error) {}
   };
+
+
+const fetchSenderProfile = async () => {
+  try {
+    const res = await axios.get(
+      `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+    );
+    if (res) {
+      setSenderprofile(res.data.profile._id);
+      
+    } else {
+      setSenderprofile();
+    }
+  } catch (error) {}
+};
 
   const fetchMessageBox = async () => {
     try {
@@ -84,7 +101,7 @@ const Message = () => {
     };
   }, []);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const messageData = {
       sender: userId,
       receiver: receiverId,
@@ -96,6 +113,8 @@ const Message = () => {
     socket.emit("sendMessage", messageData);
 
     setNewMessage("");
+    const res= await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/add-chatters',{senderId:userId,receiverId:profileDp._id,receiverUserId:receiverId,senderProfileId:senderprofile})
+    console.log(res.data);
   };
 
   const fetchMessage = async () => {
@@ -116,7 +135,7 @@ const Message = () => {
   const onEmojiClick = (emojiData) => {
     setNewMessage((prevInput) => prevInput + emojiData.emoji); // Correct emoji property
   };
-  const [isCommentVisible, setIsCommentVisible] = useState(false);
+  
 
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
@@ -127,6 +146,7 @@ const Message = () => {
     fetchMessage();
     fetchUserProfile();
     fetchMessageBox();
+    fetchSenderProfile()
   }, []);
 
   useEffect(() => {
@@ -293,14 +313,14 @@ const Message = () => {
 
           <div className="bg-white shadow-lg w-full h-screen overflow-y-scroll max-[800px]:hidden  ">
             <div className="flex justify-between items-center px-[1%] pb-[1%] pt-[2%] border-b-[1px] top-[70px]  bg-white z-10 fixed w-[67.9%] max-[1240px]:w-[59.4%] max-[960px]:w-[52.8%]">
-              {profileDp && (
+            {profileDp && (
                 <div className="flex items-center font-QSemi">
                   <img
                     className="h-[60px] aspect-square object-cover rounded-[50%] mr-[20%]"
-                    src={profileDp.image}
+                    src={profileDp.image?profileDp.image:userimg}
                     alt=""
                   />
-                  <h2>{profileDp.userName}</h2>
+                  <h2>{profileDp.userName?profileDp.userName:profileDp.name}</h2>
                 </div>
               )}
 

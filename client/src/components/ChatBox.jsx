@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-
+import userimg from "../images/user.png";
 import EmojiPicker from "emoji-picker-react";
 import {
   faFaceSmile,
@@ -44,7 +44,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
         `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
       );
       if (res) {
-        setProfileDp(res.data);
+        setProfileDp(res.data.profile?res.data.profile:res.data.user);
         
       } else {
         setProfileDp();
@@ -139,7 +139,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
     <div className="hidden max-[800px]:block fixed bottom-0 left-0 right-0 z-10 h-screen  mx-[5%] max-[425px]:mx-[2%]  rounded-t-[20px] max-[550px]:rounded-t-[10px] shadow-lg">
       <div className="bg-white shadow-lg w-full h-full overflow-y-scroll   ">
         <div className="flex justify-between items-center px-[1%] pb-[1%] pt-[2%] border-b-[1px]  bg-white z-10 fixed w-[90%] max-[425px]:w-[96%]  ">
-          {profileDp && (
+        {profileDp && (
             <div className="flex items-center font-QSemi max-[425px]:text-[15px]">
               <FontAwesomeIcon
                 onClick={() => setHide(false)}
@@ -148,10 +148,10 @@ const ChatBox = ({ onDataSend, receiverId }) => {
               />
               <img
                 className="h-[60px] aspect-square max-[425px]:h-[50px] object-cover rounded-[50%] mr-[20%]"
-                src={profileDp.image}
+                src={profileDp.image?profileDp.image:userimg}
                 alt=""
               />
-              <h2>{profileDp.userName}</h2>
+              <h2>{profileDp.userName?profileDp.userName:profileDp.name}</h2>
             </div>
           )}
 

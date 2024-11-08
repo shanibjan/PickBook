@@ -410,13 +410,19 @@ router.get('/get-profile-for-chat/:id',async(req,res)=>{
   try {
     const userId=req.params.id
     const profile=await profileModel.findOne({user:userId})
-    if (!mongoose.Types.ObjectId.isValid(profile)) {
+    let user=null
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+   
+    if(!profile){
+       user=await userModel.findOne({_id:userId})
     }
     
    
     res.status(200).json(
-      profile,
+      { profile, user }
     );
   } catch (error) {
     console.log(error);

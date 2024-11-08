@@ -28,6 +28,9 @@ const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
+  console.log(profiledata?.user);
+  console.log(userDetails?._id);
+  
   
 
   post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -197,7 +200,7 @@ const UserProfile = () => {
                           </button>
                         )}
                         <button
-                          onClick={() => nav(`/message/${profiledata.user}`)}
+                          onClick={() => nav(`/message/${profiledata?.user || userDetails._id}`)}
                           className="bg-gray-400 font-QSemi text-white px-[15%]  max-[900px]:px-[12%] py-[4%] rounded-[10px] shadow-md "
                         >
                           Message
@@ -319,7 +322,7 @@ const UserProfile = () => {
                     )}
 
                     <button
-                      onClick={() => nav(`/message/${profiledata.user}`)}
+                      onClick={() => nav(`/message/${profiledata?.user || userDetails._id}`)}
                       className="bg-gray-400 font-QSemi text-white px-[5%] py-[1%] max-[425px]px-[7%] max-[425px]:py-[2%] max-[425px]:rounded-[5px] rounded-[10px] "
                     >
                       Message
