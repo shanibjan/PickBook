@@ -199,7 +199,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
           </div>
         </div>
 
-        <div className="px-[1%] pb-[1%] fixed bottom-0 w-[90%] max-[425px]:w-[96%] bg-white">
+        <div className="px-[1%] pb-[20%] fixed bottom-0 w-[90%] max-[425px]:w-[96%] bg-white">
           <div className=" flex justify-between items-center text-[20px] h-[50px] text-gray-500 px-[1%]  bg-white z-10  rounded-[30px] border-[1px]">
             {showPicker && (
               <div className="absolute bottom-[64px] w-[95%]">
