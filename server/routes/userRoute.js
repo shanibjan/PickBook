@@ -388,6 +388,22 @@ router.post('/noti-unfollow',async(req,res)=>{
   }
 })
 
+router.post('/noti-post-delete',async(req,res)=>{
+  try {
+    const{postUser,post}=req.body
+    const notification= await notificationModel.findOne({postUser})
+    notification.like = notification.like.filter((like) => {
+      return !(like.post === post );
+    });
+    
+    await notification.save()
+    res.status(201).send(notification.like);
+
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 router.get('/get-messages/:sender/:receiver', async (req, res) => {
   const { sender, receiver } = req.params;
   

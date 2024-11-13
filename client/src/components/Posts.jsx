@@ -217,15 +217,19 @@ const Posts = () => {
     }
   };
 
-  const removePost = async (postId) => {
+  const removePost = async (post) => {
     try {
-      console.log(postId);
+    
 
       const res = await axios.delete(
-        `https://pickbook-da7f.onrender.com/api/v1/user/remove-post/${postId}`
+        `http://localhost:7000/api/v1/user/remove-post/${post._id}`
       );
       fetchPost();
       console.log(res.data);
+
+      await axios.post(`http://localhost:7000/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
+      
+      
     } catch (error) {
       console.log(error);
     }
@@ -356,7 +360,7 @@ const Posts = () => {
                         {item.user._id === userId ? (
                           <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] left-[-170px] max-[1000px]:left-[-125px] max-[550px]:text-[11px] max-[500px]:left-[-125px] max-[1000px]:w-[150px] ">
                             <li
-                              onClick={() => removePost(item._id)}
+                              onClick={() => removePost(item)}
                               className="border-b-[1px]"
                             >
                               Remove post

@@ -191,6 +191,22 @@ const PostDetails = () => {
       console.log(error);
     }
   };
+
+  const removePost= async()=>{
+    try {
+     const res = await axios.delete(
+       `http://localhost:7000/api/v1/user/remove-post/${post._id}`
+     );
+     console.log(res.data);
+     nav(`/user/${userName}`)
+ 
+     await axios.post(`http://localhost:7000/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
+     
+    } catch (error) {
+     
+    }
+     
+   }
   return (
     <div className="absolute top-[70px] w-full">
       {user ? (
@@ -264,7 +280,7 @@ const PostDetails = () => {
                     <FontAwesomeIcon icon={faEllipsis} />
                     {post && post.user._id === userId ? (
                       <ul className="dropdown-menu font-QSemi text-[#244262] leading-[35px] max-[1000px]:px-[20px] max-[1000px]:left-[-80px] max-[550px]:text-[11px] max-[500px]:left-[-110px] max-[1000px]:w-[150px] ">
-                        <li className="border-b-[1px]">Remove post</li>
+                        <li onClick={removePost} className="border-b-[1px]">Remove post</li>
                         <li>Go to profile</li>
                       </ul>
                     ) : (
