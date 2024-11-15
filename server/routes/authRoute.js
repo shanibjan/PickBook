@@ -200,6 +200,7 @@ router.post("/login", async (req, res) => {
         _id: user._id,
         name: user.name,
         phone: user.phone,
+        password: user.password,
       },
     });
   } catch (error) {
