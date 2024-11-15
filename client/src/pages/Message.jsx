@@ -47,7 +47,7 @@ console.log(profileDp);
 
   const checkPassword=async()=>{
     try {
-      const res=await axios.post('http://localhost:7000/api/v1/user/check-password-change',{userId,password})
+      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
       setCheck(res.data.success);
       
     } catch (error) {

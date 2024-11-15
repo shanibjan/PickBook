@@ -50,7 +50,7 @@ const PostDetails = () => {
 
   const checkPassword=async()=>{
     try {
-      const res=await axios.post('http://localhost:7000/api/v1/user/check-password-change',{userId,password})
+      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
       setCheck(res.data.success);
       
     } catch (error) {
@@ -209,12 +209,12 @@ const PostDetails = () => {
   const removePost= async()=>{
     try {
      const res = await axios.delete(
-       `http://localhost:7000/api/v1/user/remove-post/${post._id}`
+       `https://pickbook-da7f.onrender.com/api/v1/user/remove-post/${post._id}`
      );
      console.log(res.data);
      nav(`/user/${userName}`)
  
-     await axios.post(`http://localhost:7000/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
+     await axios.post(`https://pickbook-da7f.onrender.com/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
      
     } catch (error) {
      

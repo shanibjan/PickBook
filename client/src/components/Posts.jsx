@@ -222,12 +222,12 @@ const Posts = () => {
     
 
       const res = await axios.delete(
-        `http://localhost:7000/api/v1/user/remove-post/${post._id}`
+        `https://pickbook-da7f.onrender.com/api/v1/user/remove-post/${post._id}`
       );
       fetchPost();
       console.log(res.data);
 
-      await axios.post(`http://localhost:7000/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
+      await axios.post(`https://pickbook-da7f.onrender.com/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
       
       
     } catch (error) {
