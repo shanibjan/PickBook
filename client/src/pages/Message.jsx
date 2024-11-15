@@ -41,7 +41,21 @@ console.log(profileDp);
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name: null;
+  const password=user? user.password:null
+  const [check,setCheck]=useState(true)
   let orderedMessageBox = messageBoxes.slice().reverse();
+
+  const checkPassword=async()=>{
+    try {
+      const res=await axios.post('http://localhost:7000/api/v1/user/check-password-change',{userId,password})
+      setCheck(res.data.success);
+      
+    } catch (error) {
+     
+      setCheck(error.response.data.success);
+      
+    }
+ }
 
   const fetchUserProfile = async () => {
     try {
@@ -61,7 +75,7 @@ console.log(profileDp);
 const fetchSenderProfile = async () => {
   try {
     const res = await axios.get(
-      `http://localhost:7000/api/v1/user/get-profile-for-users/${userName}`
+      `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
     );
     if (res) {
       setSenderprofile(res.data.profile._id);
@@ -147,6 +161,7 @@ const fetchSenderProfile = async () => {
     fetchUserProfile();
     fetchMessageBox();
     fetchSenderProfile()
+    checkPassword()
   }, []);
 
   useEffect(() => {
@@ -172,7 +187,7 @@ const fetchSenderProfile = async () => {
         <NavBar />
       </div>
 
-      {user ? (
+      {user && check ? (
         <div className="flex px-[2%] h-full  ">
           <div className="w-[40%] max-[1240px]:w-[60%] max-[960px]:w-[80%] max-[800px]:w-full h-screen overflow-y-scroll mr-[1%] py-[2%] max-[800px]:hidden ">
             <div className="flex justify-between  bg-gray-100 py-[3%] px-[6%]  rounded-[10px]">

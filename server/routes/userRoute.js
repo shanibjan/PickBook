@@ -509,5 +509,21 @@ router.get('/get-filter-post/:id',async(req,res)=>{
     
   }
 })
+router.post('/check-password-change',async(req,res)=>{
+  try {
+    const {password,userId}=req.body
+    const user=await userModel.findOne({_id:userId})
+    
+    if(user.password!==password){
+      return res.status(400).send({ message: "password changed" ,success:false});
+    }
+   
+    res.status(201).send({ message: "password not changed" ,success:true});
+
+  } catch (error) {
+    console.log(error);
+  
+  }
+})
 
 export default router;

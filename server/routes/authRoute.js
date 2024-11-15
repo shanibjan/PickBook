@@ -235,4 +235,42 @@ router.put('/change-password',async(req,res)=>{
   
 })
 
+
+router.post("/change-password-login", async (req, res) => {
+  try {
+    const { userId, password, newPassword } = req.body;
+
+    const user = await userModel.findOne({ _id: userId });
+    const match = await comparePassword(password, user.password);
+
+    if (!match) {
+      return res.status(401).send({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+    const hashedPassword = await hashPassword(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+    res.status(200).send({
+      success: true,
+      message: "Password changed successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        phone: user.phone,
+        password: user.password,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error updating password",
+
+      error,
+    });
+  }
+});
+
 export default router;

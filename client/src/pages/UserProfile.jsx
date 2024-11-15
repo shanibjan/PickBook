@@ -28,12 +28,24 @@ const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
-  console.log(profiledata?.user);
-  console.log(userDetails?._id);
   
   
+  const password = user ? user.password : null;
+  const [check, setCheck] = useState(true);
 
   post.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const checkPassword = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:7000/api/v1/user/check-password-change",
+        { userId, password }
+      );
+      setCheck(res.data.success);
+    } catch (error) {
+      setCheck(error.response.data.success);
+    }
+  };
   const fetchComment = async () => {
     try {
       const res = await axios.get(
@@ -134,6 +146,7 @@ const UserProfile = () => {
     fetchProfile();
     fetchComment();
     fetchSelfProfile();
+    checkPassword()
   }, []);
 
   useEffect(() => {
@@ -143,7 +156,7 @@ const UserProfile = () => {
   }, [pickBookUserName]);
   return (
     <div className="absolute top-[70px] w-full">
-      {user ? (
+      {user && check ? (
         <div>
           <NavBar />
           <div className="mx-[5%] max-[425px]:mx-[2%] bg-[#FAFAFA] p-[3%] max-[850px]:px-[4%] max-[420px]:px-[2%] rounded-[20px]">
@@ -211,18 +224,22 @@ const UserProfile = () => {
                     <div className="dropdown">
                       <FontAwesomeIcon icon={faEllipsis} />
 
-                      <ul className="dropdown-menu text-[#244262] leading-[35px] max-[1000px]:px-[20px] max-[1000px]:left-[-80px] max-[550px]:text-[11px] max-[500px]:left-[-110px] max-[1000px]:w-[150px] ">
-                        <li
-                          className="font-QSemi"
-                          onClick={() => {
-                            localStorage.removeItem("pickbook-user");
-                            localStorage.removeItem("pickbook-token");
-                            nav("/login");
-                          }}
-                        >
-                          {"Logout"}
-                        </li>
-                      </ul>
+                      {userName === pickBookUserName && (
+                        <ul className="dropdown-menu text-[#244262] leading-[35px] max-[1000px]:px-[20px] max-[1000px]:left-[-80px] max-[550px]:text-[11px] max-[500px]:left-[-110px] max-[1000px]:w-[150px] ">
+                          <li
+                            className="font-QSemi border-b-[1px]"
+                            onClick={() => {
+                              localStorage.removeItem("pickbook-user");
+                              localStorage.removeItem("pickbook-token");
+                              nav("/login");
+                            }}
+                          >
+                            Logout
+                          </li>
+
+                          <li onClick={()=>nav('/change-password')} className="font-QSemi">Change password</li>
+                        </ul>
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-between font-QSemi text-[20px] max-[425px]:text-[15px] my-[5%] w-[97%]">

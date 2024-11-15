@@ -13,14 +13,25 @@ const Editprofile = () => {
 const nav=useNavigate()
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
-  
+  const password=user? user.password:null
+  const [check,setCheck]=useState(true)
 
   const [image, setImage] = useState();
   const [profiledata, setProfileData] = useState();
   const[bio,setBio]=useState()
   console.log(profiledata);
   
-  
+  const checkPassword=async()=>{
+    try {
+      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
+      setCheck(res.data.success);
+      
+    } catch (error) {
+     
+      setCheck(error.response.data.success);
+      
+    }
+ }
 
   const store = (e) => {
     let val = e.target.files[0];
@@ -50,11 +61,11 @@ const nav=useNavigate()
 
   useEffect(() => {
     fetchProfile();
+    checkPassword()
   }, []);
 
   const changeProfile = async () => {
    
-    
     
     try {
       const res = await axios.put(`https://pickbook-da7f.onrender.com/api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
@@ -101,7 +112,8 @@ const nav=useNavigate()
 
   return (
     <div>
-      <div className="h-screen">
+      {user && check ?(<div>
+        <div className="h-screen">
         <NavBar/>
         
         <div className="h-[75%] flex items-center justify-center">
@@ -149,6 +161,8 @@ const nav=useNavigate()
       </div>
       <Footer/>
       <ToastContainer limit={1} />
+      </div>): nav('/login')}
+      
     </div>
   );
 };

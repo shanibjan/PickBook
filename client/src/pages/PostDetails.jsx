@@ -44,7 +44,21 @@ const PostDetails = () => {
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
   const userName = user ? user.name : null;
+  const password=user? user.password:null
+  const [check,setCheck]=useState(true)
 
+
+  const checkPassword=async()=>{
+    try {
+      const res=await axios.post('http://localhost:7000/api/v1/user/check-password-change',{userId,password})
+      setCheck(res.data.success);
+      
+    } catch (error) {
+     
+      setCheck(error.response.data.success);
+      
+    }
+ }
   const fetchComment = async () => {
     try {
       const res = await axios.get(
@@ -128,7 +142,7 @@ const PostDetails = () => {
 
   useEffect(() => {
     handleDataFromChild();
-   
+    checkPassword()
     fetchComment();
     fetchProfile();
   }, []);
@@ -209,7 +223,7 @@ const PostDetails = () => {
    }
   return (
     <div className="absolute top-[70px] w-full">
-      {user ? (
+      {user && check ? (
         <div>
           <NavBar />
 

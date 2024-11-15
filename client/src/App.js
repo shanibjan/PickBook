@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Editprofile from "./pages/Editprofile";
 
 import Noti from "./pages/Noti";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
       <Route  path="/post/:postId" element={<PostDetails/>} />
       <Route  path="/message/:receiverId" element={<Message/>} />
       <Route  path="/edit-profile" element={<Editprofile/>} />
-      
+      <Route  path="/change-password" element={<ChangePassword/>} />
       <Route  path="/noti" element={<Noti/>} />
      </Routes>
     
