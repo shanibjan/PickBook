@@ -99,6 +99,7 @@ const fetchSenderProfile = async () => {
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false)
     }
   };
 

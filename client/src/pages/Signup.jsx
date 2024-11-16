@@ -35,7 +35,7 @@ const Signup = ({}) => {
   const sendOtp = async () => {
     try {
       if (valid === false) {
-        const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/send-otp", { phone });
+        const res = await axios.post("api/v1/auth/send-otp", { phone });
 
         toast.success(res.data.message, {
           ...toastStyles,
@@ -58,7 +58,7 @@ const Signup = ({}) => {
   };
   const verifyOtp = async () => {
     try {
-      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/verify-phone", { phone, otp });
+      const res = await axios.post("api/v1/auth/verify-phone", { phone, otp });
       console.log(res.data);
       if (res.data.success) {
         toast.success(res.data.message, {
@@ -119,8 +119,8 @@ const Signup = ({}) => {
           <h4 className="text-[30px] max-[550px]:text-[20px] max-[370px]:text-[15px] font-QSemi text-[#244262] my-[4%] ">
             Provide User information here
           </h4>
-          {bar === "phone" ? (
-            <div>
+
+          <div>
               <input
                 className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
                 type="text"
@@ -143,28 +143,9 @@ const Signup = ({}) => {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          ) : bar === "otp" ? (
-            <div>
+
               <input
-                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] "
-                type="number"
-                placeholder="Enter OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
-              <br />
-              <p
-                onClick={sendOtp}
-                className="font-QMedium cursor-pointer text-[#8735C8]"
-              >
-                Didn't get the code ?.Resend Code
-              </p>
-            </div>
-          ) : (
-            <div>
-              <input
-                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] mb-[2%] max-[425px]:mb-[7%]"
+                className="bg-[#EBF5FF] outline-none max-[425px]:text-[12px] max-[425px]:py-[3%] font-QRegular w-[60%] max-[750px]:w-[65%] max-[500px]:w-[80%] py-[1%] px-[2%] my-[40px]"
                 type="text"
                 placeholder="Username"
                 value={name}
@@ -180,30 +161,14 @@ const Signup = ({}) => {
               />
               <br />
             </div>
-          )}
+          
 
-          {bar === "phone" ? (
-            <button
-              onClick={sendOtp}
-              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] mt-[15%] max-[370px]:mt-[15%] tracking-[2px] mb-[2%]  text-white"
-            >
-              SEND OTP
-            </button>
-          ) : bar === "otp" ? (
-            <button
-              onClick={verifyOtp}
-              className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] mt-[7%] max-[370px]:mt-[15%] tracking-[2px] mb-[2%]  text-white"
-            >
-              VERIFY OTP
-            </button>
-          ) : (
             <button
               onClick={signUp}
               className="bg-[#8735C8] py-[3%] px-[7%] font-QMedium text-[12px] mt-[7%] max-[370px]:mt-[15%] tracking-[2px] mb-[2%]  text-white"
             >
               SIGNUP
             </button>
-          )}
 
           <h4
             onClick={() => nav("/login")}

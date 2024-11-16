@@ -111,7 +111,10 @@ router.post("/register", async (req, res) => {
     if (!name || !phone || !password) {
       return res.status(400).send({ message: "All fields are required" });
     }
-
+    if(phone.length !==13){
+      return res.status(400).send({ message: "Invalid phone number" });
+      
+    }
     // Check user
     const existingUser = await userModel.findOne({ phone });
 
