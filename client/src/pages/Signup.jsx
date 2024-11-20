@@ -95,7 +95,7 @@ const Signup = ({}) => {
         });
       }
     } catch (error) {
-      window.alert();
+     
       toast.success(error.response.data.message, {
         ...toastStyles,
       });
