@@ -31,7 +31,7 @@ const Footer = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`);
+      const res = await axios.get(`https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
         setProfileData(res.data.profile);
       } else {

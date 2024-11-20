@@ -75,7 +75,7 @@ const Signup = ({}) => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post("https://pickbook-da7f.onrender.com/api/v1/auth/register", {
+      const res = await axios.post("https://pickbook-media.onrender.com/api/v1/auth/register", {
         name,
         password,
         phone,

@@ -19,7 +19,7 @@ import {
 import { io } from "socket.io-client";
 import axios from "axios";
 
-export const socket = io("https://pickbook-da7f.onrender.com", {
+export const socket = io("https://pickbook-media.onrender.com", {
   transports: ["websocket", "polling"], // Enable both transports
 });
 
@@ -41,7 +41,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
   const fetchUserProfile = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
       );
       if (res) {
         setProfileDp(res.data.profile?res.data.profile:res.data.user);
@@ -55,7 +55,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
   const fetchSenderProfile = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setSenderprofile(res.data.profile._id);
@@ -103,7 +103,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
 
     setNewMessage("");
 
-    const res= await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/add-chatters',{senderId:userId,receiverId:profileDp._id,receiverUserId:receiverId,senderProfileId:senderprofile})
+    const res= await axios.post('https://pickbook-media.onrender.com/api/v1/user/add-chatters',{senderId:userId,receiverId:profileDp._id,receiverUserId:receiverId,senderProfileId:senderprofile})
     console.log(res.data);
     
   };
@@ -111,7 +111,7 @@ const ChatBox = ({ onDataSend, receiverId }) => {
   const fetchMessage = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-messages/${userId}/${receiverId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-messages/${userId}/${receiverId}`
       );
       if (res) {
         setMessages(res.data);

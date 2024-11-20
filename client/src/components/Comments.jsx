@@ -35,7 +35,7 @@ const Comments = ({ onDataSend, postId }) => {
   const fetchComment = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-comment/${postId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-comment/${postId}`
       );
       if (res.data) {
         setComm(res.data);
@@ -49,7 +49,7 @@ const Comments = ({ onDataSend, postId }) => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setProfileData(res.data);
@@ -62,7 +62,7 @@ const Comments = ({ onDataSend, postId }) => {
   const addComment = async () => {
     try {
       const res = await axios.post(
-        "https://pickbook-da7f.onrender.com/api/v1/user/add-comment",
+        "https://pickbook-media.onrender.com/api/v1/user/add-comment",
         {
           postId,
           profile: profiledata.profile._id,
@@ -81,7 +81,7 @@ const Comments = ({ onDataSend, postId }) => {
 
   const removeComment = async (commentId) => {
     try {
-      await axios.delete(`https://pickbook-da7f.onrender.com/api/v1/user/remove-comment/${commentId}`);
+      await axios.delete(`https://pickbook-media.onrender.com/api/v1/user/remove-comment/${commentId}`);
       fetchComment();
     } catch (error) {}
   };

@@ -50,7 +50,7 @@ const PostDetails = () => {
 
   const checkPassword=async()=>{
     try {
-      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
+      const res=await axios.post('https://pickbook-media.onrender.com/api/v1/user/check-password-change',{userId,password})
       setCheck(res.data.success);
       
     } catch (error) {
@@ -62,7 +62,7 @@ const PostDetails = () => {
   const fetchComment = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-comment/${postId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-comment/${postId}`
       );
       if (res) {
         setComm(res.data);
@@ -76,7 +76,7 @@ const PostDetails = () => {
   const fetchPost = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-post-over-view/${postId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-post-over-view/${postId}`
       );
      
       if (res.data) {
@@ -99,7 +99,7 @@ const PostDetails = () => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`
       );
       if (res) {
         setProfileData(res.data.profile);
@@ -112,7 +112,7 @@ const PostDetails = () => {
   const fetchPosts = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-posts-for-users/${
+        `https://pickbook-media.onrender.com/api/v1/user/get-posts-for-users/${
           post && post.userName
         }`
       );
@@ -166,7 +166,7 @@ const PostDetails = () => {
 
   const likePost = async (postId) => {
     try {
-      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/like-post", {
+      await axios.post("https://pickbook-media.onrender.com/api/v1/user/like-post", {
         postId,
         userId,
       });
@@ -174,7 +174,7 @@ const PostDetails = () => {
       fetchPost();
       if (post.user._id !== userId) {
         const res = await axios.post(
-          "https://pickbook-da7f.onrender.com/api/v1/user/noti-like",
+          "https://pickbook-media.onrender.com/api/v1/user/noti-like",
           {
             postUser: post.user._id,
             likedUser: userName,
@@ -190,14 +190,14 @@ const PostDetails = () => {
   };
   const dislikePost = async (postId) => {
     try {
-      await axios.post("https://pickbook-da7f.onrender.com/api/v1/user/dislike-post", {
+      await axios.post("https://pickbook-media.onrender.com/api/v1/user/dislike-post", {
         postId,
         userId,
       });
 
       fetchPost();
       const res = await axios.post(
-        "https://pickbook-da7f.onrender.com/api/v1/user/noti-dislike",
+        "https://pickbook-media.onrender.com/api/v1/user/noti-dislike",
         { postUser: post.user._id, post: post.image, likedUser: userName }
       );
       console.log(res.data);
@@ -209,12 +209,12 @@ const PostDetails = () => {
   const removePost= async()=>{
     try {
      const res = await axios.delete(
-       `https://pickbook-da7f.onrender.com/api/v1/user/remove-post/${post._id}`
+       `https://pickbook-media.onrender.com/api/v1/user/remove-post/${post._id}`
      );
      console.log(res.data);
      nav(`/user/${userName}`)
  
-     await axios.post(`https://pickbook-da7f.onrender.com/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
+     await axios.post(`https://pickbook-media.onrender.com/api/v1/user/noti-post-delete`,{postUser:userId,post:post.image})
      
     } catch (error) {
      

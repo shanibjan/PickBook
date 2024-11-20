@@ -22,7 +22,7 @@ const ChangePassword = ({}) => {
   const changePassword = async () => {
     try {
       const res = await axios.post(
-        "https://pickbook-da7f.onrender.com/api/v1/auth/change-password-login",
+        "https://pickbook-media.onrender.com/api/v1/auth/change-password-login",
         { password: oldPassword, userId, newPassword }
       );
       localStorage.setItem("pickbook-user", JSON.stringify(res.data.user));

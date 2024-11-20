@@ -22,7 +22,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import loading from "../images/buffering-colors.gif";
 
-export const socket = io("https://pickbook-da7f.onrender.com", {
+export const socket = io("https://pickbook-media.onrender.com", {
   transports: ["websocket", "polling"], // Enable both transports
 });
 
@@ -32,38 +32,38 @@ const Message = () => {
   const [profileDp, setProfileDp] = useState();
   const [messageBoxes, setMessageBoxes] = useState([]);
   const nav = useNavigate();
-console.log(profileDp);
+  console.log(profileDp);
 
   const [messages, setMessages] = useState([]);
-  const[senderprofile,setSenderprofile]=useState()
+  const [senderprofile, setSenderprofile] = useState();
   const [newMessage, setNewMessage] = useState("");
   const [isCommentVisible, setIsCommentVisible] = useState(false);
   const user = JSON.parse(localStorage.getItem("pickbook-user"));
   const userId = user ? user._id : null;
-  const userName = user ? user.name: null;
-  const password=user? user.password:null
-  const [check,setCheck]=useState(true)
+  const userName = user ? user.name : null;
+  const password = user ? user.password : null;
+  const [check, setCheck] = useState(true);
   let orderedMessageBox = messageBoxes.slice().reverse();
 
-  const checkPassword=async()=>{
+  const checkPassword = async () => {
     try {
-      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
+      const res = await axios.post(
+        "https://pickbook-media.onrender.com/api/v1/user/check-password-change",
+        { userId, password }
+      );
       setCheck(res.data.success);
-      
     } catch (error) {
-     
       setCheck(error.response.data.success);
-      
     }
- }
+  };
 
   const fetchUserProfile = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-chat/${receiverId}`
       );
       if (res && receiverId !== userId) {
-        setProfileDp(res.data.profile?res.data.profile:res.data.user);
+        setProfileDp(res.data.profile ? res.data.profile : res.data.user);
         setIsCommentVisible(true);
       } else if (receiverId === userId) {
         setProfileDp();
@@ -71,35 +71,33 @@ console.log(profileDp);
     } catch (error) {}
   };
 
-
-const fetchSenderProfile = async () => {
-  try {
-    const res = await axios.get(
-      `https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`
-    );
-    if (res) {
-      setSenderprofile(res.data.profile._id);
-      
-    } else {
-      setSenderprofile();
-    }
-  } catch (error) {}
-};
+  const fetchSenderProfile = async () => {
+    try {
+      const res = await axios.get(
+        `https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`
+      );
+      if (res) {
+        setSenderprofile(res.data.profile._id);
+      } else {
+        setSenderprofile();
+      }
+    } catch (error) {}
+  };
 
   const fetchMessageBox = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-chatters/${userId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-chatters/${userId}`
       );
       if (res.data) {
         setMessageBoxes(res.data);
-        setIsLoading(false)
+        setIsLoading(false);
       } else {
         setMessageBoxes([]);
       }
     } catch (error) {
       console.log(error);
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -128,14 +126,22 @@ const fetchSenderProfile = async () => {
     socket.emit("sendMessage", messageData);
 
     setNewMessage("");
-    const res= await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/add-chatters',{senderId:userId,receiverId:profileDp._id,receiverUserId:receiverId,senderProfileId:senderprofile})
+    const res = await axios.post(
+      "https://pickbook-media.onrender.com/api/v1/user/add-chatters",
+      {
+        senderId: userId,
+        receiverId: profileDp._id,
+        receiverUserId: receiverId,
+        senderProfileId: senderprofile,
+      }
+    );
     console.log(res.data);
   };
 
   const fetchMessage = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-messages/${userId}/${receiverId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-messages/${userId}/${receiverId}`
       );
       if (res) {
         setMessages(res.data);
@@ -150,7 +156,6 @@ const fetchSenderProfile = async () => {
   const onEmojiClick = (emojiData) => {
     setNewMessage((prevInput) => prevInput + emojiData.emoji); // Correct emoji property
   };
-  
 
   const handleDataFromChild = (data) => {
     setIsCommentVisible(data);
@@ -161,8 +166,8 @@ const fetchSenderProfile = async () => {
     fetchMessage();
     fetchUserProfile();
     fetchMessageBox();
-    fetchSenderProfile()
-    checkPassword()
+    fetchSenderProfile();
+    checkPassword();
   }, []);
 
   useEffect(() => {
@@ -274,8 +279,6 @@ const fetchSenderProfile = async () => {
               </div>
             </div>
 
-           
-
             <div className="flex justify-between p-[6%] font-QBold  border-b-[1px]">
               <h2>Message</h2>
               <h2 className="text-[#8735C8]">See all</h2>
@@ -289,9 +292,8 @@ const fetchSenderProfile = async () => {
                 />
               </div>
             ) : null}
-            {orderedMessageBox.length>0 ?
-            <div>
-              
+            {orderedMessageBox.length > 0 ? (
+              <div>
                 {orderedMessageBox.map((message, index) => {
                   return (
                     <div
@@ -322,21 +324,26 @@ const fetchSenderProfile = async () => {
                     </div>
                   );
                 })}
-            </div>:isLoading===false?(<div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center" >
-        <h1>No messages yet</h1>
-      </div>):null}
+              </div>
+            ) : isLoading === false ? (
+              <div className="font-QSemi my-[4%] h-[150px] flex justify-center items-center">
+                <h1>No messages yet</h1>
+              </div>
+            ) : null}
           </div>
 
           <div className="bg-white shadow-lg w-full h-screen overflow-y-scroll max-[800px]:hidden  ">
             <div className="flex justify-between items-center px-[1%] pb-[1%] pt-[2%] border-b-[1px] top-[70px]  bg-white z-10 fixed w-[67.9%] max-[1240px]:w-[59.4%] max-[960px]:w-[52.8%]">
-            {profileDp && (
+              {profileDp && (
                 <div className="flex items-center font-QSemi">
                   <img
                     className="h-[60px] aspect-square object-cover rounded-[50%] mr-[20%]"
-                    src={profileDp.image?profileDp.image:userimg}
+                    src={profileDp.image ? profileDp.image : userimg}
                     alt=""
                   />
-                  <h2>{profileDp.userName?profileDp.userName:profileDp.name}</h2>
+                  <h2>
+                    {profileDp.userName ? profileDp.userName : profileDp.name}
+                  </h2>
                 </div>
               )}
 

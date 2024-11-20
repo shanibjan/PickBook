@@ -27,7 +27,7 @@ const Profile = () => {
 
 const fetchProfile = async () => {
     try {
-      const res = await axios.get(`https://pickbook-da7f.onrender.com/api/v1/user/get-profile/${userId}`);
+      const res = await axios.get(`https://pickbook-media.onrender.com/api/v1/user/get-profile/${userId}`);
       if (res) {
         setProfileData(res.data);
       } else {
@@ -39,7 +39,7 @@ const fetchProfile = async () => {
 
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`https://pickbook-da7f.onrender.com/api/v1/user/get-posts/${userId}`);
+      const res = await axios.get(`https://pickbook-media.onrender.com/api/v1/user/get-posts/${userId}`);
       if (res) {
         setPost(res.data);
       } else {

@@ -23,7 +23,7 @@ const nav=useNavigate()
   
   const checkPassword=async()=>{
     try {
-      const res=await axios.post('https://pickbook-da7f.onrender.com/api/v1/user/check-password-change',{userId,password})
+      const res=await axios.post('https://pickbook-media.onrender.com/api/v1/user/check-password-change',{userId,password})
       setCheck(res.data.success);
       
     } catch (error) {
@@ -48,7 +48,7 @@ const nav=useNavigate()
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`https://pickbook-da7f.onrender.com/api/v1/user/get-profile-for-users/${userName}`);
+      const res = await axios.get(`https://pickbook-media.onrender.com/api/v1/user/get-profile-for-users/${userName}`);
       if (res) {
         setProfileData(res.data.profile);
       } else {
@@ -68,7 +68,7 @@ const nav=useNavigate()
    
     
     try {
-      const res = await axios.put(`https://pickbook-da7f.onrender.com/api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
+      const res = await axios.put(`https://pickbook-media.onrender.com/api/v1/user/edit-profile/${profiledata._id}`,{image:image||profiledata.image,bio:bio||profiledata.bio});
       console.log(res.data);
       
       toast.success(res.data.message, {
@@ -90,7 +90,7 @@ const nav=useNavigate()
 
   const addProfile = async () => {
     try {
-      const res = await axios.post(`https://pickbook-da7f.onrender.com/api/v1/user/add-profile`,{image,bio,userId,userName});
+      const res = await axios.post(`https://pickbook-media.onrender.com/api/v1/user/add-profile`,{image,bio,userId,userName});
       console.log(res.data);
      
       toast.success(res.data.message, {

@@ -17,13 +17,14 @@ const Notification = ({ onDataSend }) => {
   const fetchNoti = async () => {
     try {
       const res = await axios.get(
-        `https://pickbook-da7f.onrender.com/api/v1/user/get-notification/${userId}`
+        `https://pickbook-media.onrender.com/api/v1/user/get-notification/${userId}`
       );
 
       setNoti([...res.data.like, ...res.data.follow]);
       setIsLoading(false)
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   noti && noti.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
